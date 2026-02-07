@@ -190,7 +190,10 @@ export const resetGame = () => {
 
     resetSelectionUI();
     updateUI();
-    document.getElementById('gameOver').style.display = 'none';
+    const gameOver = document.getElementById('gameOver');
+    if (gameOver) {
+        gameOver.style.display = 'none';
+    }
     startWave();
 };
 
