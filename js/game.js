@@ -176,7 +176,7 @@ const updateEnemies = () => {
 };
 
 const checkWaveEnd = () => {
-    if (state.gameRunning && enemies.length === 0) {
+    if (state.gameRunning && enemies.length === 0 && !spawnIntervalId) {
         state.gameRunning = false;
         if (state.lives > 0 && !state.nextWaveScheduled) {
             state.nextWaveScheduled = true;
