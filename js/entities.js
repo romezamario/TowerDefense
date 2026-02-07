@@ -2,6 +2,47 @@ import { path, towerTypes } from './constants.js';
 import { enemies, projectiles } from './state.js';
 
 let ctx = null;
+const enemySpatialGrid = {
+    cellSize: 120,
+    buckets: new Map()
+};
+
+const getCellKey = (cellX, cellY) => `${cellX},${cellY}`;
+
+export const rebuildEnemySpatialIndex = () => {
+    const { cellSize, buckets } = enemySpatialGrid;
+    buckets.clear();
+
+    for (const enemy of enemies) {
+        const cellX = Math.floor(enemy.x / cellSize);
+        const cellY = Math.floor(enemy.y / cellSize);
+        const key = getCellKey(cellX, cellY);
+        if (!buckets.has(key)) {
+            buckets.set(key, []);
+        }
+        buckets.get(key).push(enemy);
+    }
+};
+
+const getEnemiesInRange = (x, y, range) => {
+    const { cellSize, buckets } = enemySpatialGrid;
+    const minCellX = Math.floor((x - range) / cellSize);
+    const maxCellX = Math.floor((x + range) / cellSize);
+    const minCellY = Math.floor((y - range) / cellSize);
+    const maxCellY = Math.floor((y + range) / cellSize);
+    const nearby = [];
+
+    for (let cellX = minCellX; cellX <= maxCellX; cellX += 1) {
+        for (let cellY = minCellY; cellY <= maxCellY; cellY += 1) {
+            const bucket = buckets.get(getCellKey(cellX, cellY));
+            if (bucket) {
+                nearby.push(...bucket);
+            }
+        }
+    }
+
+    return nearby;
+};
 
 export const setRenderContext = (renderingContext) => {
     ctx = renderingContext;
@@ -58,7 +99,9 @@ export class Tower {
         let minDist = Infinity;
         const type = towerTypes[this.type];
 
-        for (const enemy of enemies) {
+        const nearbyEnemies = getEnemiesInRange(this.x, this.y, type.range);
+
+        for (const enemy of nearbyEnemies) {
             const dist = Math.hypot(enemy.x - this.x, enemy.y - this.y);
             if (dist < type.range && dist < minDist) {
                 closest = enemy;

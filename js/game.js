@@ -1,5 +1,5 @@
 import { levels, path, towerTypes } from './constants.js';
-import { Enemy, Tower, setRenderContext } from './entities.js';
+import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
 
@@ -193,6 +193,7 @@ export const gameLoop = (currentTime) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     drawPath();
+    rebuildEnemySpatialIndex();
     updateTowers(currentTime);
     updateProjectiles();
     updateEnemies();
