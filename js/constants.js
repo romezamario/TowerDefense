@@ -9,36 +9,59 @@ export const path = [
     { x: 800, y: 300 }
 ];
 
-export const towerTypes = [
-    {
-        name: 'Láser',
-        cost: 100,
-        damage: 15,
-        range: 120,
-        fireRate: 500,
-        color: '#00fff5',
-        projectileSpeed: 8
+export const towerProfile = {
+    name: 'Centinela',
+    cost: 150,
+    color: '#00fff5'
+};
+
+export const upgradeLevels = {
+    damage: {
+        base: 20,
+        multiplier: 1.2
     },
-    {
-        name: 'Cañón',
-        cost: 150,
-        damage: 40,
-        range: 150,
-        fireRate: 1200,
-        color: '#ff006e',
-        projectileSpeed: 5
+    range: {
+        base: 130,
+        multiplier: 1.1
     },
-    {
-        name: 'Pulso',
-        cost: 200,
-        damage: 25,
-        range: 100,
-        fireRate: 800,
-        color: '#8338ec',
-        projectileSpeed: 6,
-        aoe: 80
+    fireRate: {
+        base: 700,
+        multiplier: 0.9
+    },
+    projectileSpeed: {
+        base: 6,
+        multiplier: 1.05
+    },
+    aoe: {
+        base: 0,
+        multiplier: 1.1
     }
-];
+};
+
+const computeUpgradeValue = (config, level) => config.base * (config.multiplier ** level);
+
+export const getTowerStats = (upgradeState = {}) => {
+    const damage = Math.round(computeUpgradeValue(upgradeLevels.damage, upgradeState.damage ?? 0));
+    const range = Math.round(computeUpgradeValue(upgradeLevels.range, upgradeState.range ?? 0));
+    const fireRate = Math.max(
+        100,
+        Math.round(computeUpgradeValue(upgradeLevels.fireRate, upgradeState.fireRate ?? 0))
+    );
+    const projectileSpeed = Math.max(
+        1,
+        Math.round(computeUpgradeValue(upgradeLevels.projectileSpeed, upgradeState.projectileSpeed ?? 0))
+    );
+    const aoe = Math.round(computeUpgradeValue(upgradeLevels.aoe, upgradeState.aoe ?? 0));
+
+    return {
+        ...towerProfile,
+        damage,
+        range,
+        fireRate,
+        projectileSpeed,
+        aoe
+    };
+};
 
 export const levels = [
     {

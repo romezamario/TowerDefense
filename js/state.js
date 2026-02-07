@@ -6,6 +6,13 @@ export const state = {
     levelIndex: 0,
     selectedTowerType: 0,
     selectedTowerId: null,
+    towerUpgrades: {
+        damage: 0,
+        range: 0,
+        fireRate: 0,
+        projectileSpeed: 0,
+        aoe: 0
+    },
     gameRunning: false,
     nextWaveScheduled: false,
     towerUpgrades: {
