@@ -33,11 +33,22 @@ const initialize = () => {
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+    const homeScreen = document.getElementById('homeScreen');
+    const gameScreen = document.getElementById('gameScreen');
+    const startWaveButton = document.getElementById('startWaveBtn');
     initializeGame(ctx);
 
     setupUIEvents(canvas);
     updateUI();
-    startWave();
+    startWaveButton.addEventListener(
+        'click',
+        () => {
+            homeScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            startWave();
+        },
+        { once: true },
+    );
 
     requestAnimationFrame(gameLoop);
 };
