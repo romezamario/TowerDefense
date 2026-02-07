@@ -1,49 +1,39 @@
+import { upgradeLevels } from './constants.js';
+import { state } from './state.js';
+
 export const getUpgradeCost = (baseCost, level) => {
     const safeLevel = Number.isFinite(level) ? level : 0;
     const cost = baseCost * Math.log2(safeLevel + 2);
     return Math.max(1, Math.round(cost));
-import { towerTypes } from './constants.js';
-import { state } from './state.js';
-
-const baseTowerTypes = towerTypes.map((tower) => ({ ...tower }));
-const COST_MULTIPLIER = 1.35;
+};
 
 const upgradeConfigs = {
     damage: {
-        levelKey: 'damageLevel',
-        costKey: 'damageCost',
-        step: 0.12,
+        baseCost: 120,
         label: 'Daño'
     },
     range: {
-        levelKey: 'rangeLevel',
-        costKey: 'rangeCost',
-        step: 0.08,
+        baseCost: 110,
         label: 'Alcance'
     },
     fireRate: {
-        levelKey: 'fireRateLevel',
-        costKey: 'fireRateCost',
-        step: 0.06,
+        baseCost: 130,
         label: 'Cadencia'
     }
 };
 
-const getDamageMultiplier = (level) => 1 + upgradeConfigs.damage.step * level;
-const getRangeMultiplier = (level) => 1 + upgradeConfigs.range.step * level;
-const getFireRateMultiplier = (level) => Math.max(0.5, 1 - upgradeConfigs.fireRate.step * level);
+const getUpgradePercent = (upgradeKey, level) => {
+    const config = upgradeLevels[upgradeKey];
+    if (!config) {
+        return 0;
+    }
 
-const refreshTowerStats = () => {
-    const damageMultiplier = getDamageMultiplier(state.towerUpgrades.damageLevel);
-    const rangeMultiplier = getRangeMultiplier(state.towerUpgrades.rangeLevel);
-    const fireRateMultiplier = getFireRateMultiplier(state.towerUpgrades.fireRateLevel);
+    const multiplier = config.multiplier ** level;
+    if (upgradeKey === 'fireRate') {
+        return Math.round((1 - multiplier) * 100);
+    }
 
-    towerTypes.forEach((tower, index) => {
-        const base = baseTowerTypes[index];
-        tower.damage = Math.round(base.damage * damageMultiplier);
-        tower.range = Math.round(base.range * rangeMultiplier);
-        tower.fireRate = Math.max(120, Math.round(base.fireRate * fireRateMultiplier));
-    });
+    return Math.round((multiplier - 1) * 100);
 };
 
 export const applyUpgrade = (upgradeKey) => {
@@ -52,44 +42,30 @@ export const applyUpgrade = (upgradeKey) => {
         return false;
     }
 
-    const cost = state.towerUpgrades[config.costKey];
+    const currentLevel = state.towerUpgrades[upgradeKey] ?? 0;
+    const cost = getUpgradeCost(config.baseCost, currentLevel);
     if (state.money < cost) {
         return false;
     }
 
     state.money -= cost;
-    state.towerUpgrades[config.levelKey] += 1;
-    state.towerUpgrades[config.costKey] = Math.round(cost * COST_MULTIPLIER);
-    refreshTowerStats();
+    state.towerUpgrades[upgradeKey] = currentLevel + 1;
     return true;
 };
 
 export const getUpgradeSnapshot = () => {
-    const damageLevel = state.towerUpgrades.damageLevel;
-    const rangeLevel = state.towerUpgrades.rangeLevel;
-    const fireRateLevel = state.towerUpgrades.fireRateLevel;
-    const damageMultiplier = getDamageMultiplier(damageLevel);
-    const rangeMultiplier = getRangeMultiplier(rangeLevel);
-    const fireRateMultiplier = getFireRateMultiplier(fireRateLevel);
+    return Object.entries(upgradeConfigs).reduce((accumulator, [upgradeKey, config]) => {
+        const level = state.towerUpgrades[upgradeKey] ?? 0;
+        const percent = getUpgradePercent(upgradeKey, level);
+        const prefix = upgradeKey === 'fireRate' ? '-' : '+';
 
-    return {
-        damage: {
-            level: damageLevel,
-            cost: state.towerUpgrades.damageCost,
-            label: upgradeConfigs.damage.label,
-            valueText: `${upgradeConfigs.damage.label} actual: +${Math.round((damageMultiplier - 1) * 100)}%`
-        },
-        range: {
-            level: rangeLevel,
-            cost: state.towerUpgrades.rangeCost,
-            label: upgradeConfigs.range.label,
-            valueText: `${upgradeConfigs.range.label} actual: +${Math.round((rangeMultiplier - 1) * 100)}%`
-        },
-        fireRate: {
-            level: fireRateLevel,
-            cost: state.towerUpgrades.fireRateCost,
-            label: upgradeConfigs.fireRate.label,
-            valueText: `${upgradeConfigs.fireRate.label} actual: -${Math.round((1 - fireRateMultiplier) * 100)}%`
-        }
-    };
+        accumulator[upgradeKey] = {
+            level,
+            cost: getUpgradeCost(config.baseCost, level),
+            label: config.label,
+            valueText: `${config.label} actual: ${prefix}${percent}%`
+        };
+
+        return accumulator;
+    }, {});
 };

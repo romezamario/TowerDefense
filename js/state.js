@@ -14,15 +14,7 @@ export const state = {
         aoe: 0
     },
     gameRunning: false,
-    nextWaveScheduled: false,
-    towerUpgrades: {
-        damageLevel: 0,
-        rangeLevel: 0,
-        fireRateLevel: 0,
-        damageCost: 120,
-        rangeCost: 110,
-        fireRateCost: 130
-    }
+    nextWaveScheduled: false
 };
 
 export const towers = [];
