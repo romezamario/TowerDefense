@@ -6,6 +6,7 @@ import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
 let ctx = null;
 let nextWaveTimeoutId = null;
 let spawnIntervalId = null;
+let uiDirty = false;
 
 export const initializeGame = (renderingContext) => {
     ctx = renderingContext;
@@ -162,12 +163,12 @@ const updateEnemies = () => {
         if (enemy.health <= 0) {
             state.money += enemy.value;
             state.kills += 1;
-            updateUI();
+            uiDirty = true;
             enemies.splice(i, 1);
         } else if (enemy.move()) {
             enemies.splice(i, 1);
             state.lives -= 1;
-            updateUI();
+            uiDirty = true;
             if (state.lives <= 0) return;
         } else {
             enemy.draw();
@@ -196,6 +197,10 @@ export const gameLoop = (currentTime) => {
     updateProjectiles();
     updateEnemies();
     checkWaveEnd();
+    if (uiDirty) {
+        updateUI();
+        uiDirty = false;
+    }
 
     requestAnimationFrame(gameLoop);
 };
