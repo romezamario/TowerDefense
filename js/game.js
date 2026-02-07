@@ -62,13 +62,27 @@ export const startWave = () => {
 };
 
 export const handleCanvasClick = (event, canvas) => {
-    if (state.selectedTowerType === null) return;
-
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     const x = (event.clientX - rect.left) * scaleX;
     const y = (event.clientY - rect.top) * scaleY;
+
+    if (state.selectedTowerType === null) {
+        let closestTower = null;
+        let minDist = Infinity;
+
+        for (const tower of towers) {
+            const dist = Math.hypot(tower.x - x, tower.y - y);
+            if (dist < 20 && dist < minDist) {
+                closestTower = tower;
+                minDist = dist;
+            }
+        }
+
+        state.selectedTowerId = closestTower ? closestTower.id : null;
+        return;
+    }
 
     const cost = towerTypes[state.selectedTowerType].cost;
 
@@ -91,7 +105,9 @@ export const handleCanvasClick = (event, canvas) => {
         }
 
         if (!tooClose) {
-            towers.push(new Tower(x, y, state.selectedTowerType));
+            const newTower = new Tower(x, y, state.selectedTowerType);
+            towers.push(newTower);
+            state.selectedTowerId = newTower.id;
             state.money -= cost;
             updateUI();
         }
@@ -103,6 +119,7 @@ export const resetGame = () => {
     state.wave = 0;
     state.kills = 0;
     state.selectedTowerType = null;
+    state.selectedTowerId = null;
     state.gameRunning = false;
     state.nextWaveScheduled = false;
     if (nextWaveTimeoutId) {
@@ -141,7 +158,7 @@ const drawPath = () => {
 const updateTowers = (currentTime) => {
     for (const tower of towers) {
         tower.update(currentTime);
-        tower.draw();
+        tower.draw(tower.id === state.selectedTowerId);
     }
 };
 

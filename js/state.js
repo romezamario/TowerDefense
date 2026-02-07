@@ -5,6 +5,7 @@ export const state = {
     kills: 0,
     levelIndex: 0,
     selectedTowerType: null,
+    selectedTowerId: null,
     gameRunning: false,
     nextWaveScheduled: false
 };
