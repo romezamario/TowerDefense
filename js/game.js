@@ -1,5 +1,5 @@
 import { levels, path, towerTypes } from './constants.js';
-import { Enemy, Tower, setRenderContext } from './entities.js';
+import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
 
@@ -10,6 +10,7 @@ let pathCanvas = null;
 let pathCanvasContext = null;
 let cachedPathWidth = 0;
 let cachedPathHeight = 0;
+let uiDirty = false;
 
 export const initializeGame = (renderingContext) => {
     ctx = renderingContext;
@@ -66,13 +67,27 @@ export const startWave = () => {
 };
 
 export const handleCanvasClick = (event, canvas) => {
-    if (state.selectedTowerType === null) return;
-
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
     const scaleY = canvas.height / rect.height;
     const x = (event.clientX - rect.left) * scaleX;
     const y = (event.clientY - rect.top) * scaleY;
+
+    if (state.selectedTowerType === null) {
+        let closestTower = null;
+        let minDist = Infinity;
+
+        for (const tower of towers) {
+            const dist = Math.hypot(tower.x - x, tower.y - y);
+            if (dist < 20 && dist < minDist) {
+                closestTower = tower;
+                minDist = dist;
+            }
+        }
+
+        state.selectedTowerId = closestTower ? closestTower.id : null;
+        return;
+    }
 
     const cost = towerTypes[state.selectedTowerType].cost;
 
@@ -95,7 +110,9 @@ export const handleCanvasClick = (event, canvas) => {
         }
 
         if (!tooClose) {
-            towers.push(new Tower(x, y, state.selectedTowerType));
+            const newTower = new Tower(x, y, state.selectedTowerType);
+            towers.push(newTower);
+            state.selectedTowerId = newTower.id;
             state.money -= cost;
             updateUI();
         }
@@ -107,6 +124,7 @@ export const resetGame = () => {
     state.wave = 0;
     state.kills = 0;
     state.selectedTowerType = null;
+    state.selectedTowerId = null;
     state.gameRunning = false;
     state.nextWaveScheduled = false;
     if (nextWaveTimeoutId) {
@@ -161,7 +179,7 @@ const drawPath = () => {
 const updateTowers = (currentTime) => {
     for (const tower of towers) {
         tower.update(currentTime);
-        tower.draw();
+        tower.draw(tower.id === state.selectedTowerId);
     }
 };
 
@@ -182,12 +200,12 @@ const updateEnemies = () => {
         if (enemy.health <= 0) {
             state.money += enemy.value;
             state.kills += 1;
-            updateUI();
+            uiDirty = true;
             enemies.splice(i, 1);
         } else if (enemy.move()) {
             enemies.splice(i, 1);
             state.lives -= 1;
-            updateUI();
+            uiDirty = true;
             if (state.lives <= 0) return;
         } else {
             enemy.draw();
@@ -215,10 +233,15 @@ export const gameLoop = (currentTime) => {
     if (pathCanvas) {
         ctx.drawImage(pathCanvas, 0, 0);
     }
+    rebuildEnemySpatialIndex();
     updateTowers(currentTime);
     updateProjectiles();
     updateEnemies();
     checkWaveEnd();
+    if (uiDirty) {
+        updateUI();
+        uiDirty = false;
+    }
 
     requestAnimationFrame(gameLoop);
 };
