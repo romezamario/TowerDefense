@@ -6,6 +6,10 @@ import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
 let ctx = null;
 let nextWaveTimeoutId = null;
 let spawnIntervalId = null;
+let pathCanvas = null;
+let pathCanvasContext = null;
+let cachedPathWidth = 0;
+let cachedPathHeight = 0;
 
 export const initializeGame = (renderingContext) => {
     ctx = renderingContext;
@@ -125,17 +129,33 @@ export const resetGame = () => {
 };
 
 const drawPath = () => {
-    ctx.strokeStyle = 'rgba(131, 56, 236, 0.3)';
-    ctx.lineWidth = 50;
-    ctx.shadowColor = '#8338ec';
-    ctx.shadowBlur = 20;
-    ctx.beginPath();
-    ctx.moveTo(path[0].x, path[0].y);
-    for (let i = 1; i < path.length; i += 1) {
-        ctx.lineTo(path[i].x, path[i].y);
+    if (!pathCanvas) {
+        pathCanvas = document.createElement('canvas');
+        pathCanvasContext = pathCanvas.getContext('2d');
     }
-    ctx.stroke();
-    ctx.shadowBlur = 0;
+    if (!pathCanvasContext) {
+        return;
+    }
+
+    if (cachedPathWidth !== ctx.canvas.width || cachedPathHeight !== ctx.canvas.height) {
+        cachedPathWidth = ctx.canvas.width;
+        cachedPathHeight = ctx.canvas.height;
+        pathCanvas.width = cachedPathWidth;
+        pathCanvas.height = cachedPathHeight;
+
+        pathCanvasContext.clearRect(0, 0, pathCanvas.width, pathCanvas.height);
+        pathCanvasContext.strokeStyle = 'rgba(131, 56, 236, 0.3)';
+        pathCanvasContext.lineWidth = 50;
+        pathCanvasContext.shadowColor = '#8338ec';
+        pathCanvasContext.shadowBlur = 20;
+        pathCanvasContext.beginPath();
+        pathCanvasContext.moveTo(path[0].x, path[0].y);
+        for (let i = 1; i < path.length; i += 1) {
+            pathCanvasContext.lineTo(path[i].x, path[i].y);
+        }
+        pathCanvasContext.stroke();
+        pathCanvasContext.shadowBlur = 0;
+    }
 };
 
 const updateTowers = (currentTime) => {
@@ -190,8 +210,12 @@ const checkWaveEnd = () => {
 
 export const gameLoop = (currentTime) => {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    ctx.shadowBlur = 0;
 
     drawPath();
+    if (pathCanvas) {
+        ctx.drawImage(pathCanvas, 0, 0);
+    }
     updateTowers(currentTime);
     updateProjectiles();
     updateEnemies();
