@@ -69,17 +69,6 @@ const setupUIEvents = (canvas) => {
         'click',
         () => {
             showGameScreen();
-            const homeScreen = document.getElementById('homeScreen');
-            const gameScreen = document.getElementById('gameScreen');
-            if (!homeScreen || !gameScreen) {
-                console.warn('startWave: missing #homeScreen or #gameScreen elements.');
-            }
-            if (homeScreen) {
-                homeScreen.classList.add('hidden');
-            }
-            if (gameScreen) {
-                gameScreen.classList.remove('hidden');
-            }
             startWave();
         },
         { once: true },
