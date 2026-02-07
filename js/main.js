@@ -1,5 +1,5 @@
 import { gameLoop, handleCanvasClick, initializeGame, resetGame, selectTower, startWave } from './game.js';
-import { updateUI } from './ui.js';
+import { showGameScreen, updateUI } from './ui.js';
 
 const createStars = () => {
     const starsContainer = document.getElementById('stars');
@@ -13,7 +13,7 @@ const createStars = () => {
     }
 };
 
-const setupUIEvents = (canvas, homeScreen, gameScreen) => {
+const setupUIEvents = (canvas) => {
     document.querySelectorAll('.tower-btn[data-tower-type]').forEach((button) => {
         button.addEventListener('click', () => {
             const type = Number(button.dataset.towerType);
@@ -25,8 +25,7 @@ const setupUIEvents = (canvas, homeScreen, gameScreen) => {
     document.getElementById('startWaveBtn').addEventListener(
         'click',
         () => {
-            homeScreen.classList.add('hidden');
-            gameScreen.classList.remove('hidden');
+            showGameScreen();
             startWave();
         },
         { once: true },
@@ -42,11 +41,9 @@ const initialize = () => {
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
-    const homeScreen = document.getElementById('homeScreen');
-    const gameScreen = document.getElementById('gameScreen');
     initializeGame(ctx);
 
-    setupUIEvents(canvas, homeScreen, gameScreen);
+    setupUIEvents(canvas);
     updateUI();
 
     requestAnimationFrame(gameLoop);

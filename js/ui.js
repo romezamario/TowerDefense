@@ -25,3 +25,15 @@ export const resetSelectionUI = () => {
         btn.classList.remove('selected');
     });
 };
+
+export const showGameScreen = () => {
+    const homeScreen = document.getElementById('homeScreen');
+    const gameScreen = document.getElementById('gameScreen');
+
+    if (homeScreen) {
+        homeScreen.classList.add('hidden');
+    }
+    if (gameScreen) {
+        gameScreen.classList.remove('hidden');
+    }
+};
