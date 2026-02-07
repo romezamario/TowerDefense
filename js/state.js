@@ -3,6 +3,7 @@ export const state = {
     lives: 20,
     wave: 0,
     kills: 0,
+    levelIndex: 0,
     selectedTowerType: null,
     gameRunning: false,
     nextWaveScheduled: false

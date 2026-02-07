@@ -90,14 +90,17 @@ export class Tower {
 }
 
 export class Enemy {
-    constructor(waveNum) {
+    constructor(waveNum, levelConfig = {}) {
         this.pathIndex = 0;
         this.x = path[0].x;
         this.y = path[0].y;
-        this.health = 50 + (waveNum * 15);
+        const healthMultiplier = levelConfig.enemyHealthMultiplier ?? 1;
+        const speedMultiplier = levelConfig.enemySpeedMultiplier ?? 1;
+        const rewardMultiplier = levelConfig.rewardMultiplier ?? 1;
+        this.health = Math.round((50 + (waveNum * 15)) * healthMultiplier);
         this.maxHealth = this.health;
-        this.speed = 1 + (waveNum * 0.1);
-        this.value = 25 + (waveNum * 5);
+        this.speed = (1 + (waveNum * 0.1)) * speedMultiplier;
+        this.value = Math.round((25 + (waveNum * 5)) * rewardMultiplier);
         this.size = 15;
     }
 

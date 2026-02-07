@@ -1,4 +1,4 @@
-import { path, towerTypes } from './constants.js';
+import { levels, path, towerTypes } from './constants.js';
 import { Enemy, Tower, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
@@ -16,6 +16,18 @@ export const selectTower = (type) => {
     setSelectedTower(type);
 };
 
+const applyLevelSettings = () => {
+    const level = levels[state.levelIndex] ?? levels[0];
+    state.money = level.baseMoney;
+    state.lives = level.baseLives;
+};
+
+export const setLevel = (levelIndex) => {
+    state.levelIndex = levelIndex;
+    applyLevelSettings();
+    updateUI();
+};
+
 export const startWave = () => {
     if (state.gameRunning) return;
     if (state.lives <= 0) return;
@@ -29,11 +41,12 @@ export const startWave = () => {
     state.gameRunning = true;
     updateUI();
 
-    const enemyCount = 10 + (state.wave * 3);
+    const level = levels[state.levelIndex] ?? levels[0];
+    const enemyCount = Math.round((10 + (state.wave * 3)) * level.enemyCountMultiplier);
     let spawned = 0;
 
     const spawnInterval = setInterval(() => {
-        enemies.push(new Enemy(state.wave));
+        enemies.push(new Enemy(state.wave, level));
         spawned += 1;
 
         if (spawned >= enemyCount) {
@@ -80,8 +93,7 @@ export const handleCanvasClick = (event, canvas) => {
 };
 
 export const resetGame = () => {
-    state.money = 500;
-    state.lives = 20;
+    applyLevelSettings();
     state.wave = 0;
     state.kills = 0;
     state.selectedTowerType = null;
