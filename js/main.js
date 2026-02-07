@@ -1,4 +1,13 @@
-import { gameLoop, handleCanvasClick, initializeGame, resetGame, selectTower, setLevel, startWave } from './game.js';
+import {
+    gameLoop,
+    handleCanvasClick,
+    initializeGame,
+    resetGame,
+    selectTower,
+    setLevel,
+    startWave,
+    upgradeSelectedTower
+} from './game.js';
 import { levels } from './constants.js';
 import { showGameScreen, updateUI } from './ui.js';
 
@@ -65,6 +74,10 @@ const setupUIEvents = (canvas) => {
     });
 
     document.getElementById('restartBtn').addEventListener('click', resetGame);
+    const upgradeBtn = document.getElementById('upgradeBtn');
+    if (upgradeBtn) {
+        upgradeBtn.addEventListener('click', upgradeSelectedTower);
+    }
     document.getElementById('startWaveBtn').addEventListener(
         'click',
         () => {
