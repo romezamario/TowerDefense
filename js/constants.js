@@ -39,3 +39,36 @@ export const towerTypes = [
         aoe: 80
     }
 ];
+
+export const levels = [
+    {
+        name: 'Nivel 1',
+        title: 'Cadete',
+        enemyCountMultiplier: 1,
+        enemyHealthMultiplier: 1,
+        enemySpeedMultiplier: 1,
+        rewardMultiplier: 1,
+        baseMoney: 500,
+        baseLives: 20
+    },
+    {
+        name: 'Nivel 2',
+        title: 'Veterano',
+        enemyCountMultiplier: 1.2,
+        enemyHealthMultiplier: 1.15,
+        enemySpeedMultiplier: 1.1,
+        rewardMultiplier: 1.05,
+        baseMoney: 450,
+        baseLives: 18
+    },
+    {
+        name: 'Nivel 3',
+        title: 'Élite',
+        enemyCountMultiplier: 1.4,
+        enemyHealthMultiplier: 1.3,
+        enemySpeedMultiplier: 1.2,
+        rewardMultiplier: 1.1,
+        baseMoney: 400,
+        baseLives: 16
+    }
+];

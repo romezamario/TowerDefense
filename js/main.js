@@ -1,5 +1,6 @@
-import { gameLoop, handleCanvasClick, initializeGame, resetGame, selectTower, startWave } from './game.js';
-import { showGameScreen, updateUI } from './ui.js';
+import { gameLoop, handleCanvasClick, initializeGame, resetGame, selectTower, setLevel, startWave } from './game.js';
+import { levels } from './constants.js';
+import { updateUI } from './ui.js';
 
 const createStars = () => {
     const starsContainer = document.getElementById('stars');
@@ -21,6 +22,33 @@ const setupUIEvents = (canvas) => {
         });
     });
 
+    const levelValue = document.getElementById('levelValue');
+    const levelPrev = document.getElementById('levelPrev');
+    const levelNext = document.getElementById('levelNext');
+    let currentLevelIndex = 0;
+
+    const updateLevelDisplay = () => {
+        const level = levels[currentLevelIndex];
+        levelValue.textContent = `${level.name} · ${level.title}`;
+        setLevel(currentLevelIndex);
+    };
+
+    const changeLevel = (direction) => {
+        currentLevelIndex = (currentLevelIndex + direction + levels.length) % levels.length;
+        updateLevelDisplay();
+    };
+
+    levelPrev.addEventListener('click', () => changeLevel(-1));
+    levelNext.addEventListener('click', () => changeLevel(1));
+    document.addEventListener('keydown', (event) => {
+        if (homeScreen.classList.contains('hidden')) return;
+        if (event.key === 'ArrowLeft') {
+            changeLevel(-1);
+        } else if (event.key === 'ArrowRight') {
+            changeLevel(1);
+        }
+    });
+
     document.getElementById('restartBtn').addEventListener('click', resetGame);
     document.getElementById('startWaveBtn').addEventListener(
         'click',
@@ -34,6 +62,8 @@ const setupUIEvents = (canvas) => {
         event.preventDefault();
         handleCanvasClick(event, canvas);
     });
+
+    updateLevelDisplay();
 };
 
 const initialize = () => {
