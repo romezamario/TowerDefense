@@ -4,6 +4,7 @@ import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
 
 let ctx = null;
+let nextWaveTimeoutId = null;
 
 export const initializeGame = (renderingContext) => {
     ctx = renderingContext;
@@ -17,6 +18,12 @@ export const selectTower = (type) => {
 
 export const startWave = () => {
     if (state.gameRunning) return;
+    if (state.lives <= 0) return;
+    if (nextWaveTimeoutId) {
+        clearTimeout(nextWaveTimeoutId);
+        nextWaveTimeoutId = null;
+    }
+    state.nextWaveScheduled = false;
 
     state.wave += 1;
     state.gameRunning = true;
@@ -77,6 +84,11 @@ export const resetGame = () => {
     state.kills = 0;
     state.selectedTowerType = null;
     state.gameRunning = false;
+    state.nextWaveScheduled = false;
+    if (nextWaveTimeoutId) {
+        clearTimeout(nextWaveTimeoutId);
+        nextWaveTimeoutId = null;
+    }
 
     towers.length = 0;
     enemies.length = 0;
@@ -141,6 +153,13 @@ const updateEnemies = () => {
 const checkWaveEnd = () => {
     if (state.gameRunning && enemies.length === 0) {
         state.gameRunning = false;
+        if (state.lives > 0 && !state.nextWaveScheduled) {
+            state.nextWaveScheduled = true;
+            nextWaveTimeoutId = setTimeout(() => {
+                nextWaveTimeoutId = null;
+                startWave();
+            }, 5000);
+        }
     }
 };
 
