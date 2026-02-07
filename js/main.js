@@ -23,7 +23,10 @@ const setupUIEvents = (canvas) => {
 
     document.getElementById('startBtn').addEventListener('click', startWave);
     document.getElementById('restartBtn').addEventListener('click', resetGame);
-    canvas.addEventListener('click', (event) => handleCanvasClick(event, canvas));
+    canvas.addEventListener('pointerdown', (event) => {
+        event.preventDefault();
+        handleCanvasClick(event, canvas);
+    });
 };
 
 const initialize = () => {
