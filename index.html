@@ -132,30 +132,40 @@
             flex: 1;
             position: relative;
             overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            padding: 20px;
         }
 
         #canvas {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+            position: relative;
+            top: auto;
+            left: auto;
+            transform: none;
             background: rgba(10, 14, 39, 0.8);
             border: 3px solid var(--neon-purple);
             box-shadow: 0 0 40px var(--neon-purple);
             border-radius: 10px;
+            width: min(75vw, 800px);
+            height: auto;
+            aspect-ratio: 4 / 3;
+            touch-action: none;
         }
 
         #sidebar {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 200px;
+            position: relative;
+            right: auto;
+            top: auto;
+            transform: none;
+            width: 220px;
             background: rgba(5, 8, 20, 0.9);
             border: 2px solid var(--neon-pink);
             border-radius: 15px;
             padding: 20px;
             box-shadow: 0 0 30px var(--glow-pink);
+            flex-shrink: 0;
         }
 
         h2 {
@@ -256,6 +266,62 @@
             font-size: 1.5rem;
             margin: 15px 0;
             font-family: 'Orbitron', sans-serif;
+        }
+
+        @media (max-width: 900px) {
+            body {
+                overflow-y: auto;
+            }
+
+            #header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            h1 {
+                font-size: 1.9rem;
+                letter-spacing: 2px;
+            }
+
+            #stats {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 15px;
+                width: 100%;
+            }
+
+            .stat {
+                padding: 8px 14px;
+                min-width: 110px;
+            }
+
+            .stat-value {
+                font-size: 1.2rem;
+            }
+
+            #gameArea {
+                flex-direction: column;
+                padding: 15px 10px 30px;
+            }
+
+            #canvas {
+                width: min(92vw, 720px);
+            }
+
+            #sidebar {
+                width: min(92vw, 360px);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.6rem;
+            }
+
+            #startBtn {
+                width: 100%;
+            }
         }
     </style>
 </head>

@@ -39,8 +39,10 @@ export const handleCanvasClick = (event, canvas) => {
     if (state.selectedTowerType === null) return;
 
     const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (event.clientX - rect.left) * scaleX;
+    const y = (event.clientY - rect.top) * scaleY;
 
     const cost = towerTypes[state.selectedTowerType].cost;
 
