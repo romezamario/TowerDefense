@@ -5,6 +5,7 @@ import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
 
 let ctx = null;
 let nextWaveTimeoutId = null;
+let spawnIntervalId = null;
 
 export const initializeGame = (renderingContext) => {
     ctx = renderingContext;
@@ -35,6 +36,10 @@ export const startWave = () => {
         clearTimeout(nextWaveTimeoutId);
         nextWaveTimeoutId = null;
     }
+    if (spawnIntervalId) {
+        clearInterval(spawnIntervalId);
+        spawnIntervalId = null;
+    }
     state.nextWaveScheduled = false;
 
     state.wave += 1;
@@ -45,12 +50,13 @@ export const startWave = () => {
     const enemyCount = Math.round((10 + (state.wave * 3)) * level.enemyCountMultiplier);
     let spawned = 0;
 
-    const spawnInterval = setInterval(() => {
+    spawnIntervalId = setInterval(() => {
         enemies.push(new Enemy(state.wave, level));
         spawned += 1;
 
         if (spawned >= enemyCount) {
-            clearInterval(spawnInterval);
+            clearInterval(spawnIntervalId);
+            spawnIntervalId = null;
         }
     }, 1000);
 };
@@ -102,6 +108,10 @@ export const resetGame = () => {
     if (nextWaveTimeoutId) {
         clearTimeout(nextWaveTimeoutId);
         nextWaveTimeoutId = null;
+    }
+    if (spawnIntervalId) {
+        clearInterval(spawnIntervalId);
+        spawnIntervalId = null;
     }
 
     towers.length = 0;

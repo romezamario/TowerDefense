@@ -1,6 +1,6 @@
 import { gameLoop, handleCanvasClick, initializeGame, resetGame, selectTower, setLevel, startWave } from './game.js';
 import { levels } from './constants.js';
-import { updateUI } from './ui.js';
+import { showGameScreen, updateUI } from './ui.js';
 
 const createStars = () => {
     const starsContainer = document.getElementById('stars');
@@ -40,8 +40,9 @@ const setupUIEvents = (canvas) => {
 
     levelPrev.addEventListener('click', () => changeLevel(-1));
     levelNext.addEventListener('click', () => changeLevel(1));
+    const homeScreen = document.getElementById('homeScreen');
     document.addEventListener('keydown', (event) => {
-        if (homeScreen.classList.contains('hidden')) return;
+        if (!homeScreen || homeScreen.classList.contains('hidden')) return;
         if (event.key === 'ArrowLeft') {
             changeLevel(-1);
         } else if (event.key === 'ArrowRight') {
