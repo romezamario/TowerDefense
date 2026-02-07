@@ -261,7 +261,7 @@
 </head>
 <body>
     <div class="stars" id="stars"></div>
-    
+
     <div id="gameContainer">
         <div id="header">
             <h1>⚡ Defensa Cósmica ⚡</h1>
@@ -276,30 +276,30 @@
                 </div>
                 <div class="stat">
                     <div class="stat-label">Oleada</div>
-                    <div class="stat-value" id="wave">1</div>
+                    <div class="stat-value" id="wave">0</div>
                 </div>
             </div>
         </div>
 
         <div id="gameArea">
             <canvas id="canvas" width="800" height="600"></canvas>
-            
+
             <div id="sidebar">
                 <h2>⚔️ Torres ⚔️</h2>
-                <button class="tower-btn" onclick="selectTower(0)">
+                <button class="tower-btn" data-tower-type="0">
                     LÁSER
                     <div class="tower-info">Costo: 100 | Rápido</div>
                 </button>
-                <button class="tower-btn" onclick="selectTower(1)">
+                <button class="tower-btn" data-tower-type="1">
                     CAÑÓN
                     <div class="tower-info">Costo: 150 | Potente</div>
                 </button>
-                <button class="tower-btn" onclick="selectTower(2)">
+                <button class="tower-btn" data-tower-type="2">
                     PULSO
                     <div class="tower-info">Costo: 200 | Área</div>
                 </button>
                 <div id="controls">
-                    <button id="startBtn" onclick="startWave()">▶ INICIAR OLEADA</button>
+                    <button id="startBtn">▶ INICIAR OLEADA</button>
                 </div>
             </div>
         </div>
@@ -309,421 +309,9 @@
         <h2>GAME OVER</h2>
         <p>Oleadas Sobrevividas: <span id="finalWave">0</span></p>
         <p>Enemigos Eliminados: <span id="finalKills">0</span></p>
-        <button class="tower-btn" onclick="location.reload()">REINICIAR</button>
+        <button class="tower-btn" id="restartBtn">REINICIAR</button>
     </div>
 
-    <script>
-        // Crear estrellas de fondo
-        const starsContainer = document.getElementById('stars');
-        for (let i = 0; i < 100; i++) {
-            const star = document.createElement('div');
-            star.className = 'star';
-            star.style.left = Math.random() * 100 + '%';
-            star.style.top = Math.random() * 100 + '%';
-            star.style.animationDelay = Math.random() * 3 + 's';
-            starsContainer.appendChild(star);
-        }
-
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d');
-
-        // Estado del juego
-        let money = 500;
-        let lives = 20;
-        let wave = 0;
-        let kills = 0;
-        let selectedTowerType = null;
-        let gameRunning = false;
-
-        // Arrays del juego
-        const towers = [];
-        const enemies = [];
-        const projectiles = [];
-
-        // Camino que seguirán los enemigos
-        const path = [
-            {x: 0, y: 200},
-            {x: 200, y: 200},
-            {x: 200, y: 400},
-            {x: 400, y: 400},
-            {x: 400, y: 100},
-            {x: 600, y: 100},
-            {x: 600, y: 300},
-            {x: 800, y: 300}
-        ];
-
-        // Definición de tipos de torres
-        const towerTypes = [
-            {
-                name: 'Láser',
-                cost: 100,
-                damage: 15,
-                range: 120,
-                fireRate: 500,
-                color: '#00fff5',
-                projectileSpeed: 8
-            },
-            {
-                name: 'Cañón',
-                cost: 150,
-                damage: 40,
-                range: 150,
-                fireRate: 1200,
-                color: '#ff006e',
-                projectileSpeed: 5
-            },
-            {
-                name: 'Pulso',
-                cost: 200,
-                damage: 25,
-                range: 100,
-                fireRate: 800,
-                color: '#8338ec',
-                projectileSpeed: 6,
-                aoe: 80
-            }
-        ];
-
-        class Tower {
-            constructor(x, y, type) {
-                this.x = x;
-                this.y = y;
-                this.type = type;
-                this.lastFire = 0;
-                this.target = null;
-                this.angle = 0;
-            }
-
-            draw() {
-                const type = towerTypes[this.type];
-                
-                // Dibujar rango (solo si está seleccionada)
-                ctx.globalAlpha = 0.1;
-                ctx.fillStyle = type.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, type.range, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1;
-
-                // Base de la torre
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                // Círculo base
-                ctx.fillStyle = '#0a0e27';
-                ctx.strokeStyle = type.color;
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.arc(0, 0, 20, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-
-                // Rotar según el objetivo
-                ctx.rotate(this.angle);
-                
-                // Cañón
-                ctx.fillStyle = type.color;
-                ctx.shadowColor = type.color;
-                ctx.shadowBlur = 15;
-                ctx.fillRect(-5, -25, 10, 30);
-                
-                ctx.restore();
-            }
-
-            findTarget() {
-                let closest = null;
-                let minDist = Infinity;
-                const type = towerTypes[this.type];
-
-                for (let enemy of enemies) {
-                    const dist = Math.hypot(enemy.x - this.x, enemy.y - this.y);
-                    if (dist < type.range && dist < minDist) {
-                        closest = enemy;
-                        minDist = dist;
-                    }
-                }
-
-                this.target = closest;
-                
-                if (this.target) {
-                    this.angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
-                }
-            }
-
-            update(currentTime) {
-                this.findTarget();
-                const type = towerTypes[this.type];
-
-                if (this.target && currentTime - this.lastFire > type.fireRate) {
-                    projectiles.push(new Projectile(
-                        this.x,
-                        this.y,
-                        this.target,
-                        this.type
-                    ));
-                    this.lastFire = currentTime;
-                }
-            }
-        }
-
-        class Enemy {
-            constructor(waveNum) {
-                this.pathIndex = 0;
-                this.x = path[0].x;
-                this.y = path[0].y;
-                this.health = 50 + (waveNum * 15);
-                this.maxHealth = this.health;
-                this.speed = 1 + (waveNum * 0.1);
-                this.value = 25 + (waveNum * 5);
-                this.size = 15;
-            }
-
-            draw() {
-                // Barra de vida
-                const healthPercent = this.health / this.maxHealth;
-                ctx.fillStyle = '#333';
-                ctx.fillRect(this.x - 20, this.y - 25, 40, 5);
-                ctx.fillStyle = healthPercent > 0.5 ? '#00ff00' : healthPercent > 0.25 ? '#ffff00' : '#ff0000';
-                ctx.fillRect(this.x - 20, this.y - 25, 40 * healthPercent, 5);
-
-                // Cuerpo del enemigo
-                ctx.save();
-                ctx.translate(this.x, this.y);
-                
-                // Forma alienígena
-                ctx.fillStyle = '#ff006e';
-                ctx.strokeStyle = '#ffbe0b';
-                ctx.lineWidth = 2;
-                ctx.shadowColor = '#ff006e';
-                ctx.shadowBlur = 10;
-                
-                ctx.beginPath();
-                ctx.moveTo(0, -this.size);
-                ctx.lineTo(this.size, this.size);
-                ctx.lineTo(-this.size, this.size);
-                ctx.closePath();
-                ctx.fill();
-                ctx.stroke();
-
-                // Ojos
-                ctx.fillStyle = '#ffbe0b';
-                ctx.beginPath();
-                ctx.arc(-5, -3, 3, 0, Math.PI * 2);
-                ctx.arc(5, -3, 3, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.restore();
-            }
-
-            move() {
-                if (this.pathIndex >= path.length - 1) {
-                    lives--;
-                    updateUI();
-                    return true; // Llegó al final
-                }
-
-                const target = path[this.pathIndex + 1];
-                const dx = target.x - this.x;
-                const dy = target.y - this.y;
-                const dist = Math.hypot(dx, dy);
-
-                if (dist < this.speed) {
-                    this.pathIndex++;
-                } else {
-                    this.x += (dx / dist) * this.speed;
-                    this.y += (dy / dist) * this.speed;
-                }
-
-                return false;
-            }
-        }
-
-        class Projectile {
-            constructor(x, y, target, towerType) {
-                this.x = x;
-                this.y = y;
-                this.target = target;
-                this.type = towerType;
-                this.speed = towerTypes[towerType].projectileSpeed;
-            }
-
-            draw() {
-                const type = towerTypes[this.type];
-                ctx.fillStyle = type.color;
-                ctx.shadowColor = type.color;
-                ctx.shadowBlur = 10;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 5, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            update() {
-                if (!this.target || this.target.health <= 0) return true;
-
-                const dx = this.target.x - this.x;
-                const dy = this.target.y - this.y;
-                const dist = Math.hypot(dx, dy);
-
-                if (dist < 10) {
-                    // Impacto
-                    const type = towerTypes[this.type];
-                    
-                    if (type.aoe) {
-                        // Daño en área
-                        for (let enemy of enemies) {
-                            const distToEnemy = Math.hypot(enemy.x - this.x, enemy.y - this.y);
-                            if (distToEnemy < type.aoe) {
-                                enemy.health -= type.damage;
-                            }
-                        }
-                    } else {
-                        this.target.health -= type.damage;
-                    }
-
-                    return true;
-                }
-
-                this.x += (dx / dist) * this.speed;
-                this.y += (dy / dist) * this.speed;
-
-                return false;
-            }
-        }
-
-        function selectTower(type) {
-            selectedTowerType = type;
-            document.querySelectorAll('.tower-btn').forEach((btn, i) => {
-                btn.classList.toggle('selected', i === type);
-            });
-        }
-
-        function startWave() {
-            if (gameRunning) return;
-            
-            wave++;
-            gameRunning = true;
-            updateUI();
-
-            const enemyCount = 10 + (wave * 3);
-            let spawned = 0;
-
-            const spawnInterval = setInterval(() => {
-                enemies.push(new Enemy(wave));
-                spawned++;
-
-                if (spawned >= enemyCount) {
-                    clearInterval(spawnInterval);
-                }
-            }, 1000);
-        }
-
-        canvas.addEventListener('click', (e) => {
-            if (selectedTowerType === null) return;
-
-            const rect = canvas.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            const cost = towerTypes[selectedTowerType].cost;
-
-            if (money >= cost) {
-                // Verificar que no esté muy cerca del camino
-                let tooClose = false;
-                for (let point of path) {
-                    if (Math.hypot(point.x - x, point.y - y) < 50) {
-                        tooClose = true;
-                        break;
-                    }
-                }
-
-                // Verificar que no esté sobre otra torre
-                for (let tower of towers) {
-                    if (Math.hypot(tower.x - x, tower.y - y) < 40) {
-                        tooClose = true;
-                        break;
-                    }
-                }
-
-                if (!tooClose) {
-                    towers.push(new Tower(x, y, selectedTowerType));
-                    money -= cost;
-                    updateUI();
-                }
-            }
-        });
-
-        function updateUI() {
-            document.getElementById('money').textContent = money;
-            document.getElementById('lives').textContent = lives;
-            document.getElementById('wave').textContent = wave;
-
-            if (lives <= 0) {
-                document.getElementById('finalWave').textContent = wave;
-                document.getElementById('finalKills').textContent = kills;
-                document.getElementById('gameOver').style.display = 'block';
-                gameRunning = false;
-            }
-        }
-
-        function gameLoop(currentTime) {
-            // Limpiar canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Dibujar camino
-            ctx.strokeStyle = 'rgba(131, 56, 236, 0.3)';
-            ctx.lineWidth = 50;
-            ctx.shadowColor = '#8338ec';
-            ctx.shadowBlur = 20;
-            ctx.beginPath();
-            ctx.moveTo(path[0].x, path[0].y);
-            for (let i = 1; i < path.length; i++) {
-                ctx.lineTo(path[i].x, path[i].y);
-            }
-            ctx.stroke();
-            ctx.shadowBlur = 0;
-
-            // Actualizar y dibujar torres
-            for (let tower of towers) {
-                tower.update(currentTime);
-                tower.draw();
-            }
-
-            // Actualizar y dibujar proyectiles
-            for (let i = projectiles.length - 1; i >= 0; i--) {
-                if (projectiles[i].update()) {
-                    projectiles.splice(i, 1);
-                } else {
-                    projectiles[i].draw();
-                }
-            }
-
-            // Actualizar y dibujar enemigos
-            for (let i = enemies.length - 1; i >= 0; i--) {
-                const enemy = enemies[i];
-                
-                if (enemy.health <= 0) {
-                    money += enemy.value;
-                    kills++;
-                    updateUI();
-                    enemies.splice(i, 1);
-                } else if (enemy.move()) {
-                    enemies.splice(i, 1);
-                    if (lives <= 0) return;
-                } else {
-                    enemy.draw();
-                }
-            }
-
-            // Verificar si la oleada terminó
-            if (gameRunning && enemies.length === 0) {
-                gameRunning = false;
-            }
-
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Iniciar el juego
-        requestAnimationFrame(gameLoop);
-    </script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
