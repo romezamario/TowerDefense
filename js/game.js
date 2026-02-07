@@ -1,7 +1,7 @@
 import { levels, path, towerTypes } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
-import { resetSelectionUI, setSelectedTower, updateUI } from './ui.js';
+import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
 
 let ctx = null;
 let nextWaveTimeoutId = null;
@@ -48,6 +48,9 @@ export const startWave = () => {
     state.nextWaveScheduled = false;
 
     state.wave += 1;
+    if (state.wave % 10 === 0) {
+        triggerSpecialAttack();
+    }
     state.gameRunning = true;
     updateUI();
 
@@ -64,6 +67,51 @@ export const startWave = () => {
             spawnIntervalId = null;
         }
     }, 1000);
+};
+
+const specialAttackConfig = {
+    types: ['Meteoritos', 'Agujero negro', 'Supernova'],
+    minDestroyed: 1,
+    maxDestroyed: 4,
+    percentDestroyed: 0.3
+};
+
+const triggerSpecialAttack = () => {
+    if (towers.length === 0) {
+        return;
+    }
+
+    const attackType = specialAttackConfig.types[Math.floor(Math.random() * specialAttackConfig.types.length)];
+    const percentBased = Math.floor(towers.length * specialAttackConfig.percentDestroyed);
+    const randomTarget = Math.floor(
+        Math.random() * (specialAttackConfig.maxDestroyed - specialAttackConfig.minDestroyed + 1)
+    ) + specialAttackConfig.minDestroyed;
+    const destroyCount = Math.min(
+        towers.length,
+        specialAttackConfig.maxDestroyed,
+        Math.max(specialAttackConfig.minDestroyed, percentBased, randomTarget)
+    );
+
+    const indices = towers.map((_, index) => index);
+    for (let i = indices.length - 1; i > 0; i -= 1) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [indices[i], indices[j]] = [indices[j], indices[i]];
+    }
+    const toRemove = indices.slice(0, destroyCount).sort((a, b) => b - a);
+
+    let removedSelected = false;
+    for (const index of toRemove) {
+        if (towers[index]?.id === state.selectedTowerId) {
+            removedSelected = true;
+        }
+        towers.splice(index, 1);
+    }
+
+    if (removedSelected) {
+        state.selectedTowerId = null;
+    }
+
+    showSpecialAttackBanner(attackType, destroyCount);
 };
 
 export const handleCanvasClick = (event, canvas) => {
