@@ -4,7 +4,8 @@ export const state = {
     wave: 0,
     kills: 0,
     selectedTowerType: null,
-    gameRunning: false
+    gameRunning: false,
+    nextWaveScheduled: false
 };
 
 export const towers = [];
