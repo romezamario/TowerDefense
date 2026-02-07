@@ -160,7 +160,7 @@ const checkWaveEnd = () => {
             nextWaveTimeoutId = setTimeout(() => {
                 nextWaveTimeoutId = null;
                 startWave();
-            }, 5000);
+            }, 3000);
         }
     }
 };
