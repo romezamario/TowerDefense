@@ -37,3 +37,45 @@ export const showGameScreen = () => {
         gameScreen.classList.remove('hidden');
     }
 };
+
+export const showSpecialAttackBanner = (attackType, destroyedCount) => {
+    const gameScreen = document.getElementById('gameScreen');
+    if (!gameScreen) {
+        return;
+    }
+
+    let banner = document.getElementById('specialAttackBanner');
+    if (!banner) {
+        banner = document.createElement('div');
+        banner.id = 'specialAttackBanner';
+        banner.style.position = 'absolute';
+        banner.style.top = '110px';
+        banner.style.left = '50%';
+        banner.style.transform = 'translateX(-50%)';
+        banner.style.padding = '12px 20px';
+        banner.style.borderRadius = '12px';
+        banner.style.background = 'rgba(5, 8, 20, 0.92)';
+        banner.style.border = '2px solid #ffbe0b';
+        banner.style.boxShadow = '0 0 24px rgba(255, 190, 11, 0.6)';
+        banner.style.fontFamily = "'Orbitron', sans-serif";
+        banner.style.fontSize = '0.9rem';
+        banner.style.letterSpacing = '1px';
+        banner.style.textTransform = 'uppercase';
+        banner.style.color = '#ffbe0b';
+        banner.style.zIndex = '15';
+        banner.style.transition = 'opacity 0.3s ease';
+        gameScreen.appendChild(banner);
+    }
+
+    banner.textContent = `${attackType} en camino: ${destroyedCount} torres destruidas`;
+    banner.style.opacity = '1';
+
+    if (banner.dataset.timeoutId) {
+        clearTimeout(Number(banner.dataset.timeoutId));
+    }
+
+    const timeoutId = window.setTimeout(() => {
+        banner.style.opacity = '0';
+    }, 3000);
+    banner.dataset.timeoutId = String(timeoutId);
+};
