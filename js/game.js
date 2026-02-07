@@ -12,6 +12,18 @@ let cachedPathWidth = 0;
 let cachedPathHeight = 0;
 let uiDirty = false;
 
+const stopSpawns = () => {
+    if (nextWaveTimeoutId) {
+        clearTimeout(nextWaveTimeoutId);
+        nextWaveTimeoutId = null;
+    }
+    if (spawnIntervalId) {
+        clearInterval(spawnIntervalId);
+        spawnIntervalId = null;
+    }
+    state.nextWaveScheduled = false;
+};
+
 export const initializeGame = (renderingContext) => {
     ctx = renderingContext;
     setRenderContext(renderingContext);
@@ -37,15 +49,7 @@ export const setLevel = (levelIndex) => {
 export const startWave = () => {
     if (state.gameRunning) return;
     if (state.lives <= 0) return;
-    if (nextWaveTimeoutId) {
-        clearTimeout(nextWaveTimeoutId);
-        nextWaveTimeoutId = null;
-    }
-    if (spawnIntervalId) {
-        clearInterval(spawnIntervalId);
-        spawnIntervalId = null;
-    }
-    state.nextWaveScheduled = false;
+    stopSpawns();
 
     state.wave += 1;
     if (state.wave % 10 === 0) {
@@ -174,15 +178,7 @@ export const resetGame = () => {
     state.selectedTowerType = null;
     state.selectedTowerId = null;
     state.gameRunning = false;
-    state.nextWaveScheduled = false;
-    if (nextWaveTimeoutId) {
-        clearTimeout(nextWaveTimeoutId);
-        nextWaveTimeoutId = null;
-    }
-    if (spawnIntervalId) {
-        clearInterval(spawnIntervalId);
-        spawnIntervalId = null;
-    }
+    stopSpawns();
 
     towers.length = 0;
     enemies.length = 0;
@@ -254,7 +250,11 @@ const updateEnemies = () => {
             enemies.splice(i, 1);
             state.lives -= 1;
             uiDirty = true;
-            if (state.lives <= 0) return;
+            if (state.lives <= 0) {
+                state.gameRunning = false;
+                stopSpawns();
+                return;
+            }
         } else {
             enemy.draw();
         }
