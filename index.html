@@ -332,6 +332,13 @@
             box-shadow: 0 0 25px var(--glow-pink), inset 0 0 15px rgba(255, 255, 255, 0.3);
         }
 
+        .tower-btn:disabled {
+            opacity: 0.55;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
         .tower-info {
             font-size: 0.8rem;
             opacity: 0.8;
@@ -574,18 +581,21 @@
                 <canvas id="canvas" width="800" height="600"></canvas>
 
                 <div id="sidebar">
-                    <h2>⚔️ Torres ⚔️</h2>
-                    <button class="tower-btn" data-tower-type="0">
-                        LÁSER
-                        <div class="tower-info">Costo: 100 | Rápido</div>
+                    <h2>🛠️ Mejoras 🛠️</h2>
+                    <button class="tower-btn" data-upgrade="damage">
+                        Mejorar daño
+                        <div class="tower-info">Nivel: <span id="damageLevel">0</span> · Costo: <span id="damageCost">120</span></div>
+                        <div class="tower-info" id="damageValue">Daño actual: +0%</div>
                     </button>
-                    <button class="tower-btn" data-tower-type="1">
-                        CAÑÓN
-                        <div class="tower-info">Costo: 150 | Potente</div>
+                    <button class="tower-btn" data-upgrade="range">
+                        Mejorar alcance
+                        <div class="tower-info">Nivel: <span id="rangeLevel">0</span> · Costo: <span id="rangeCost">110</span></div>
+                        <div class="tower-info" id="rangeValue">Alcance actual: +0%</div>
                     </button>
-                    <button class="tower-btn" data-tower-type="2">
-                        PULSO
-                        <div class="tower-info">Costo: 200 | Área</div>
+                    <button class="tower-btn" data-upgrade="fireRate">
+                        Mejorar rapidez
+                        <div class="tower-info">Nivel: <span id="fireRateLevel">0</span> · Costo: <span id="fireRateCost">130</span></div>
+                        <div class="tower-info" id="fireRateValue">Cadencia actual: -0%</div>
                     </button>
                 </div>
             </div>

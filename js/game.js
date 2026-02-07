@@ -175,7 +175,7 @@ export const resetGame = () => {
     applyLevelSettings();
     state.wave = 0;
     state.kills = 0;
-    state.selectedTowerType = null;
+    state.selectedTowerType = 0;
     state.selectedTowerId = null;
     state.gameRunning = false;
     stopSpawns();
