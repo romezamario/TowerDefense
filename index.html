@@ -270,75 +270,106 @@
 
         @media (max-width: 900px) {
             body {
-                overflow-y: auto;
+                overflow-y: hidden;
             }
 
             #gameContainer {
-                height: auto;
-                min-height: 100vh;
+                height: 100vh;
             }
 
             #header {
                 flex-direction: column;
                 gap: 15px;
                 text-align: center;
-                padding: 16px 14px;
+                padding: 12px 12px;
             }
 
             h1 {
-                font-size: 1.9rem;
-                letter-spacing: 2px;
+                font-size: 1.6rem;
+                letter-spacing: 1.5px;
             }
 
             #stats {
                 flex-wrap: wrap;
                 justify-content: center;
-                gap: 15px;
+                gap: 10px;
                 width: 100%;
             }
 
             .stat {
-                padding: 8px 14px;
-                min-width: 110px;
+                padding: 6px 12px;
+                min-width: 100px;
             }
 
             .stat-value {
-                font-size: 1.2rem;
+                font-size: 1.1rem;
             }
 
             #gameArea {
                 flex-direction: column;
-                padding: 15px 10px 30px;
+                padding: 10px 10px 16px;
+                gap: 12px;
             }
 
             #canvas {
-                width: min(92vw, 720px);
+                width: min(92vw, 680px);
+                max-height: 48vh;
             }
 
             #sidebar {
-                width: min(92vw, 360px);
+                width: min(92vw, 320px);
+                padding: 14px;
+            }
+
+            h2 {
+                font-size: 1.1rem;
+                margin-bottom: 10px;
+            }
+
+            .tower-btn {
+                padding: 10px;
+                font-size: 0.95rem;
+                margin: 8px 0;
+            }
+
+            .tower-info {
+                font-size: 0.75rem;
+            }
+
+            #controls {
+                margin-top: 12px;
+            }
+
+            #startBtn {
+                padding: 10px 26px;
+                font-size: 1rem;
+                letter-spacing: 1px;
             }
         }
 
         @media (max-width: 600px) {
             h1 {
-                font-size: 1.6rem;
+                font-size: 1.4rem;
             }
 
             #stats {
                 display: grid;
-                grid-template-columns: repeat(2, minmax(120px, 1fr));
-                gap: 12px;
+                grid-template-columns: repeat(2, minmax(100px, 1fr));
+                gap: 8px;
             }
 
             #startBtn {
                 width: 100%;
             }
+
+            #canvas {
+                max-height: 44vh;
+            }
         }
 
         @media (max-width: 480px) {
             h1 {
-                font-size: 1.35rem;
+                font-size: 1.2rem;
                 letter-spacing: 1px;
             }
 
@@ -347,25 +378,45 @@
             }
 
             .stat {
-                padding: 6px 10px;
-                min-width: 90px;
+                padding: 5px 8px;
+                min-width: 84px;
             }
 
             .stat-value {
-                font-size: 1.1rem;
+                font-size: 1rem;
             }
 
             #gameArea {
-                gap: 12px;
-                padding: 12px 8px 24px;
+                gap: 10px;
+                padding: 8px 8px 14px;
             }
 
             #canvas {
                 width: 100%;
+                max-height: 42vh;
             }
 
             #sidebar {
                 width: 100%;
+                padding: 12px;
+            }
+
+            h2 {
+                font-size: 1rem;
+            }
+
+            .tower-btn {
+                padding: 8px;
+                font-size: 0.9rem;
+            }
+
+            .tower-info {
+                font-size: 0.7rem;
+            }
+
+            #startBtn {
+                padding: 8px 20px;
+                font-size: 0.95rem;
             }
         }
     </style>
