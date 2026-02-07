@@ -1,4 +1,4 @@
-import { levels, path, towerTypes } from './constants.js';
+import { levels, path, towerProfile } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
@@ -31,6 +31,13 @@ export const initializeGame = (renderingContext) => {
 };
 
 export const selectTower = (type) => {
+    if (towers.length > 0) {
+        state.selectedTowerId = towers[0].id;
+        state.selectedTowerType = null;
+        setSelectedTower(null);
+        return;
+    }
+
     state.selectedTowerType = type;
     setSelectedTower(type);
 };
@@ -126,6 +133,24 @@ export const handleCanvasClick = (event, canvas) => {
     const x = (event.clientX - rect.left) * scaleX;
     const y = (event.clientY - rect.top) * scaleY;
 
+    if (towers.length > 0) {
+        let closestTower = null;
+        let minDist = Infinity;
+
+        for (const tower of towers) {
+            const dist = Math.hypot(tower.x - x, tower.y - y);
+            if (dist < 20 && dist < minDist) {
+                closestTower = tower;
+                minDist = dist;
+            }
+        }
+
+        state.selectedTowerId = closestTower ? closestTower.id : towers[0].id;
+        state.selectedTowerType = null;
+        setSelectedTower(null);
+        return;
+    }
+
     if (state.selectedTowerType === null) {
         let closestTower = null;
         let minDist = Infinity;
@@ -143,7 +168,7 @@ export const handleCanvasClick = (event, canvas) => {
         return;
     }
 
-    const cost = towerTypes[state.selectedTowerType].cost;
+    const cost = towerProfile.cost;
 
     if (state.money >= cost) {
         // Verificar que no esté muy cerca del camino
@@ -164,7 +189,7 @@ export const handleCanvasClick = (event, canvas) => {
         }
 
         if (!tooClose) {
-            const newTower = new Tower(x, y, state.selectedTowerType);
+            const newTower = new Tower(x, y);
             towers.push(newTower);
             state.selectedTowerId = newTower.id;
             state.money -= cost;
@@ -199,7 +224,7 @@ export const resetGame = () => {
     applyLevelSettings();
     state.wave = 0;
     state.kills = 0;
-    state.selectedTowerType = null;
+    state.selectedTowerType = 0;
     state.selectedTowerId = null;
     state.gameRunning = false;
     stopSpawns();

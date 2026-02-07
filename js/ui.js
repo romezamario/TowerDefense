@@ -1,11 +1,37 @@
 import { towerTypes } from './constants.js';
 import { state, towers } from './state.js';
 import { getUpgradeCost } from './upgrades.js';
+import { state } from './state.js';
+import { getUpgradeSnapshot } from './upgrades.js';
 
 export const setSelectedTower = (type) => {
-    document.querySelectorAll('.tower-btn').forEach((btn) => {
+    document.querySelectorAll('.tower-btn[data-tower-type]').forEach((btn) => {
         const btnType = Number(btn.dataset.towerType);
         btn.classList.toggle('selected', btnType === type);
+    });
+};
+
+export const renderUpgradePanel = () => {
+    const snapshot = getUpgradeSnapshot();
+
+    Object.entries(snapshot).forEach(([key, data]) => {
+        const levelElement = document.getElementById(`${key}Level`);
+        const costElement = document.getElementById(`${key}Cost`);
+        const valueElement = document.getElementById(`${key}Value`);
+        const button = document.querySelector(`button[data-upgrade="${key}"]`);
+
+        if (levelElement) {
+            levelElement.textContent = data.level;
+        }
+        if (costElement) {
+            costElement.textContent = data.cost;
+        }
+        if (valueElement) {
+            valueElement.textContent = data.valueText;
+        }
+        if (button) {
+            button.disabled = state.money < data.cost;
+        }
     });
 };
 
@@ -13,6 +39,7 @@ export const updateUI = () => {
     document.getElementById('money').textContent = state.money;
     document.getElementById('lives').textContent = state.lives;
     document.getElementById('wave').textContent = state.wave;
+    renderUpgradePanel();
 
     if (state.lives <= 0) {
         document.getElementById('finalWave').textContent = state.wave;
@@ -25,7 +52,7 @@ export const updateUI = () => {
 };
 
 export const resetSelectionUI = () => {
-    document.querySelectorAll('.tower-btn').forEach((btn) => {
+    document.querySelectorAll('.tower-btn[data-tower-type]').forEach((btn) => {
         btn.classList.remove('selected');
     });
 };

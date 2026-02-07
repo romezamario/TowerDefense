@@ -10,6 +10,7 @@ import {
 } from './game.js';
 import { levels } from './constants.js';
 import { showGameScreen, updateUI } from './ui.js';
+import { applyUpgrade } from './upgrades.js';
 
 const createStars = () => {
     const starsContainer = document.getElementById('stars');
@@ -42,6 +43,15 @@ const setupUIEvents = (canvas) => {
         button.addEventListener('click', () => {
             const type = Number(button.dataset.towerType);
             selectTower(type);
+        });
+    });
+
+    document.querySelectorAll('button[data-upgrade]').forEach((button) => {
+        button.addEventListener('click', () => {
+            const upgradeKey = button.dataset.upgrade;
+            if (applyUpgrade(upgradeKey)) {
+                updateUI();
+            }
         });
     });
 
@@ -102,6 +112,7 @@ const initialize = () => {
     const ctx = canvas.getContext('2d');
     initializeGame(ctx);
 
+    selectTower(0);
     setupUIEvents(canvas);
     updateUI();
 
