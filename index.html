@@ -345,6 +345,39 @@
             margin-top: 5px;
         }
 
+        .upgrade-panel {
+            margin-top: 20px;
+            padding: 12px;
+            border: 1px solid rgba(255, 190, 11, 0.6);
+            border-radius: 12px;
+            background: rgba(10, 14, 39, 0.8);
+            box-shadow: 0 0 18px rgba(255, 190, 11, 0.25);
+        }
+
+        .upgrade-panel h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            text-align: center;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 8px rgba(255, 190, 11, 0.8);
+        }
+
+        .upgrade-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            margin: 6px 0;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .tower-btn[disabled] {
+            cursor: not-allowed;
+            opacity: 0.55;
+            box-shadow: none;
+            transform: none;
+        }
+
         #gameOver {
             position: absolute;
             top: 50%;
@@ -601,6 +634,20 @@
                         CENTINELA
                         <div class="tower-info">Costo: 150 | Mejorable</div>
                     </button>
+
+                    <div class="upgrade-panel" id="upgradePanel">
+                        <h3>Mejoras</h3>
+                        <p class="tower-info" id="selectedTowerLabel">Selecciona una torre para mejorar.</p>
+                        <div class="upgrade-info">
+                            <span>Nivel</span>
+                            <span id="towerLevel">-</span>
+                        </div>
+                        <div class="upgrade-info">
+                            <span>Costo mejora</span>
+                            <span id="upgradeCost">-</span>
+                        </div>
+                        <button class="tower-btn" id="upgradeBtn" disabled>Mejorar</button>
+                    </div>
                 </div>
             </div>
         </div>
