@@ -50,6 +50,8 @@ export const setRenderContext = (renderingContext) => {
 
 export class Tower {
     constructor(x, y, type) {
+        this.id = Tower.nextId;
+        Tower.nextId += 1;
         this.x = x;
         this.y = y;
         this.type = type;
@@ -58,16 +60,18 @@ export class Tower {
         this.angle = 0;
     }
 
-    draw() {
+    draw(showRange = false) {
         const type = towerTypes[this.type];
 
         // Dibujar rango (solo si está seleccionada)
-        ctx.globalAlpha = 0.1;
-        ctx.fillStyle = type.color;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, type.range, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.globalAlpha = 1;
+        if (showRange) {
+            ctx.globalAlpha = 0.1;
+            ctx.fillStyle = type.color;
+            ctx.beginPath();
+            ctx.arc(this.x, this.y, type.range, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.globalAlpha = 1;
+        }
 
         // Base de la torre
         ctx.save();
@@ -131,6 +135,8 @@ export class Tower {
         }
     }
 }
+
+Tower.nextId = 1;
 
 export class Enemy {
     constructor(waveNum, levelConfig = {}) {
