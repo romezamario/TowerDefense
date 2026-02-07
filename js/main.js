@@ -13,7 +13,7 @@ const createStars = () => {
     }
 };
 
-const setupUIEvents = (canvas) => {
+const setupUIEvents = (canvas, homeScreen, gameScreen) => {
     document.querySelectorAll('.tower-btn[data-tower-type]').forEach((button) => {
         button.addEventListener('click', () => {
             const type = Number(button.dataset.towerType);
@@ -22,11 +22,15 @@ const setupUIEvents = (canvas) => {
     });
 
     document.getElementById('restartBtn').addEventListener('click', resetGame);
-    document.getElementById('startWaveBtn').addEventListener('click', () => {
-        document.getElementById('homeScreen').classList.add('hidden');
-        document.getElementById('gameContainer').classList.remove('hidden');
-        startWave();
-    });
+    document.getElementById('startWaveBtn').addEventListener(
+        'click',
+        () => {
+            homeScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            startWave();
+        },
+        { once: true },
+    );
     canvas.addEventListener('pointerdown', (event) => {
         event.preventDefault();
         handleCanvasClick(event, canvas);
@@ -40,20 +44,10 @@ const initialize = () => {
     const ctx = canvas.getContext('2d');
     const homeScreen = document.getElementById('homeScreen');
     const gameScreen = document.getElementById('gameScreen');
-    const startWaveButton = document.getElementById('startWaveBtn');
     initializeGame(ctx);
 
-    setupUIEvents(canvas);
+    setupUIEvents(canvas, homeScreen, gameScreen);
     updateUI();
-    startWaveButton.addEventListener(
-        'click',
-        () => {
-            homeScreen.classList.add('hidden');
-            gameScreen.classList.remove('hidden');
-            startWave();
-        },
-        { once: true },
-    );
 
     requestAnimationFrame(gameLoop);
 };
