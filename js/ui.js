@@ -30,6 +30,14 @@ export const showGameScreen = () => {
     const homeScreen = document.getElementById('homeScreen');
     const gameScreen = document.getElementById('gameScreen');
 
+    if (homeScreen && gameScreen) {
+        homeScreen.classList.add('hidden');
+        gameScreen.classList.remove('hidden');
+        window.scrollTo(0, 0);
+        return;
+    }
+
+    console.warn('showGameScreen: missing #homeScreen or #gameScreen elements.');
     if (homeScreen) {
         homeScreen.classList.add('hidden');
     }
