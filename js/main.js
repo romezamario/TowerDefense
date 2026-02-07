@@ -22,6 +22,11 @@ const setupUIEvents = (canvas) => {
     });
 
     document.getElementById('restartBtn').addEventListener('click', resetGame);
+    document.getElementById('startWaveBtn').addEventListener('click', () => {
+        document.getElementById('homeScreen').classList.add('hidden');
+        document.getElementById('gameContainer').classList.remove('hidden');
+        startWave();
+    });
     canvas.addEventListener('pointerdown', (event) => {
         event.preventDefault();
         handleCanvasClick(event, canvas);
@@ -37,7 +42,6 @@ const initialize = () => {
 
     setupUIEvents(canvas);
     updateUI();
-    startWave();
 
     requestAnimationFrame(gameLoop);
 };

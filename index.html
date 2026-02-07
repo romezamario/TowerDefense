@@ -67,6 +67,89 @@
             z-index: 1;
         }
 
+        .hidden {
+            display: none !important;
+        }
+
+        #homeScreen {
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            text-align: center;
+        }
+
+        .home-card {
+            background: rgba(5, 8, 20, 0.92);
+            border: 2px solid var(--neon-cyan);
+            border-radius: 20px;
+            padding: 40px 36px;
+            max-width: 520px;
+            width: 100%;
+            box-shadow: 0 0 40px var(--glow-cyan);
+        }
+
+        .home-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.6rem;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .home-subtitle {
+            font-size: 1.1rem;
+            color: #fff;
+            opacity: 0.85;
+            margin-bottom: 28px;
+        }
+
+        .menu-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--neon-yellow);
+            margin-bottom: 12px;
+        }
+
+        .home-menu {
+            display: grid;
+            gap: 12px;
+        }
+
+        .menu-btn {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(0, 255, 245, 0.2), rgba(131, 56, 236, 0.2));
+            border: 2px solid var(--neon-cyan);
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px var(--glow-cyan);
+        }
+
+        .menu-btn:active {
+            transform: translateY(0);
+        }
+
         #header {
             background: linear-gradient(180deg, var(--bg-darker) 0%, transparent 100%);
             padding: 20px;
@@ -309,7 +392,17 @@
             .tower-info {
                 font-size: 0.75rem;
             }
+            .home-card {
+                padding: 30px 24px;
+            }
 
+            .home-title {
+                font-size: 2rem;
+            }
+
+            .home-subtitle {
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 600px) {
@@ -325,6 +418,10 @@
 
             #canvas {
                 max-height: 44vh;
+            }
+
+            .home-title {
+                font-size: 1.7rem;
             }
         }
 
@@ -374,14 +471,36 @@
             .tower-info {
                 font-size: 0.7rem;
             }
+            .home-card {
+                padding: 24px 18px;
+            }
 
+            .home-title {
+                font-size: 1.5rem;
+            }
+
+            .menu-btn {
+                font-size: 0.95rem;
+                padding: 12px 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="stars" id="stars"></div>
 
-    <div id="gameContainer">
+    <section id="homeScreen">
+        <div class="home-card">
+            <h1 class="home-title">⚡ Defensa Cósmica ⚡</h1>
+            <p class="home-subtitle">Prepárate para defender el núcleo galáctico contra la próxima oleada.</p>
+            <div class="menu-title">Menú principal</div>
+            <div class="home-menu">
+                <button class="menu-btn" id="startWaveBtn">Iniciar oleada</button>
+            </div>
+        </div>
+    </section>
+
+    <div id="gameContainer" class="hidden">
         <div id="header">
             <h1>⚡ Defensa Cósmica ⚡</h1>
             <div id="stats">
