@@ -215,32 +215,6 @@
             margin-top: 5px;
         }
 
-        #controls {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        #startBtn {
-            padding: 15px 40px;
-            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
-            border: none;
-            border-radius: 25px;
-            color: white;
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            box-shadow: 0 0 30px var(--glow-cyan);
-            transition: all 0.3s;
-        }
-
-        #startBtn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 50px var(--glow-cyan);
-        }
-
         #gameOver {
             position: absolute;
             top: 50%;
@@ -336,15 +310,6 @@
                 font-size: 0.75rem;
             }
 
-            #controls {
-                margin-top: 12px;
-            }
-
-            #startBtn {
-                padding: 10px 26px;
-                font-size: 1rem;
-                letter-spacing: 1px;
-            }
         }
 
         @media (max-width: 600px) {
@@ -356,10 +321,6 @@
                 display: grid;
                 grid-template-columns: repeat(2, minmax(100px, 1fr));
                 gap: 8px;
-            }
-
-            #startBtn {
-                width: 100%;
             }
 
             #canvas {
@@ -414,10 +375,6 @@
                 font-size: 0.7rem;
             }
 
-            #startBtn {
-                padding: 8px 20px;
-                font-size: 0.95rem;
-            }
         }
     </style>
 </head>
@@ -460,9 +417,6 @@
                     PULSO
                     <div class="tower-info">Costo: 200 | Área</div>
                 </button>
-                <div id="controls">
-                    <button id="startBtn">▶ INICIAR OLEADA</button>
-                </div>
             </div>
         </div>
     </div>

@@ -99,6 +99,7 @@ export const resetGame = () => {
     resetSelectionUI();
     updateUI();
     document.getElementById('gameOver').style.display = 'none';
+    startWave();
 };
 
 const drawPath = () => {
