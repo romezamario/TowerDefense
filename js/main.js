@@ -14,6 +14,20 @@ const createStars = () => {
     }
 };
 
+const updateVersionBadge = () => {
+    const versionValue = document.getElementById('versionValue');
+    if (!versionValue) return;
+    const lastModified = new Date(document.lastModified);
+    const formatter = new Intl.DateTimeFormat('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+    });
+    versionValue.textContent = `Versión: ${formatter.format(lastModified)}`;
+};
+
 const setupUIEvents = (canvas) => {
     document.querySelectorAll('.tower-btn[data-tower-type]').forEach((button) => {
         button.addEventListener('click', () => {
@@ -69,6 +83,7 @@ const setupUIEvents = (canvas) => {
 
 const initialize = () => {
     createStars();
+    updateVersionBadge();
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
