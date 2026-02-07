@@ -273,10 +273,16 @@
                 overflow-y: auto;
             }
 
+            #gameContainer {
+                height: auto;
+                min-height: 100vh;
+            }
+
             #header {
                 flex-direction: column;
                 gap: 15px;
                 text-align: center;
+                padding: 16px 14px;
             }
 
             h1 {
@@ -319,7 +325,46 @@
                 font-size: 1.6rem;
             }
 
+            #stats {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(120px, 1fr));
+                gap: 12px;
+            }
+
             #startBtn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.35rem;
+                letter-spacing: 1px;
+            }
+
+            #stats {
+                grid-template-columns: repeat(2, minmax(100px, 1fr));
+            }
+
+            .stat {
+                padding: 6px 10px;
+                min-width: 90px;
+            }
+
+            .stat-value {
+                font-size: 1.1rem;
+            }
+
+            #gameArea {
+                gap: 12px;
+                padding: 12px 8px 24px;
+            }
+
+            #canvas {
+                width: 100%;
+            }
+
+            #sidebar {
                 width: 100%;
             }
         }
