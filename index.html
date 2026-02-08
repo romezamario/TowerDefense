@@ -487,12 +487,16 @@
             }
 
             #stats {
-                display: grid;
-                grid-template-columns: repeat(2, minmax(100px, 1fr));
-                gap: 4px;
+                display: flex;
+                flex-wrap: nowrap;
+                justify-content: space-between;
+                gap: 6px;
+                width: 50%;
+                margin-left: auto;
             }
 
             .stat {
+                flex: 1;
                 padding: 2px 4px;
                 min-width: 50px;
                 border-radius: 4px;
@@ -545,7 +549,7 @@
             }
 
             #stats {
-                grid-template-columns: repeat(2, minmax(100px, 1fr));
+                width: 50%;
             }
 
             .stat {
