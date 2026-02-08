@@ -1,4 +1,4 @@
-import { levels, path, towerProfile } from './constants.js';
+import { levels, path, towerProfile, towerTypes } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
@@ -188,7 +188,7 @@ export const handleCanvasClick = (event, canvas) => {
         }
 
         if (!tooClose) {
-            const newTower = new Tower(x, y);
+            const newTower = new Tower(x, y, state.selectedTowerType ?? 0);
             towers.push(newTower);
             state.selectedTowerId = newTower.id;
             state.money -= cost;

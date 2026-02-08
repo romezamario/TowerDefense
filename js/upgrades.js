@@ -1,26 +1,37 @@
-import { getTowerStats } from './constants.js';
+import { upgradeLevels } from './constants.js';
 import { state } from './state.js';
 
-const upgradeConfigs = {
-    damage: {
-        label: 'Daño',
-        baseCost: 120
-    },
-    range: {
-        label: 'Alcance',
-        baseCost: 110
-    },
-    fireRate: {
-        label: 'Cadencia',
-        baseCost: 130
-    }
-};
-
-const getUpgradeCost = (baseCost, level) => {
+export const getUpgradeCost = (baseCost, level) => {
     const safeLevel = Number.isFinite(level) ? level : 0;
     const cost = baseCost * Math.log2(safeLevel + 2);
     return Math.max(1, Math.round(cost));
 };
+const COST_MULTIPLIER = 1.35;
+
+const upgradeConfigs = {
+    damage: {
+        levelKey: 'damage',
+        costKey: 'damageCost',
+        multiplier: upgradeLevels.damage.multiplier,
+        label: 'Daño'
+    },
+    range: {
+        levelKey: 'range',
+        costKey: 'rangeCost',
+        multiplier: upgradeLevels.range.multiplier,
+        label: 'Alcance'
+    },
+    fireRate: {
+        levelKey: 'fireRate',
+        costKey: 'fireRateCost',
+        multiplier: upgradeLevels.fireRate.multiplier,
+        label: 'Cadencia'
+    }
+};
+
+const getDamageMultiplier = (level) => upgradeConfigs.damage.multiplier ** level;
+const getRangeMultiplier = (level) => upgradeConfigs.range.multiplier ** level;
+const getFireRateMultiplier = (level) => upgradeConfigs.fireRate.multiplier ** level;
 
 export const applyUpgrade = (upgradeKey) => {
     const config = upgradeConfigs[upgradeKey];
@@ -35,7 +46,8 @@ export const applyUpgrade = (upgradeKey) => {
     }
 
     state.money -= cost;
-    state.towerUpgrades[upgradeKey] = currentLevel + 1;
+    state.towerUpgrades[config.levelKey] += 1;
+    state.towerUpgrades[config.costKey] = Math.round(cost * COST_MULTIPLIER);
     return true;
 };
 
@@ -52,8 +64,12 @@ const getPercentChange = (currentValue, baseValue, isInverse = false) => {
 };
 
 export const getUpgradeSnapshot = () => {
-    const baseStats = getTowerStats();
-    const currentStats = getTowerStats(state.towerUpgrades);
+    const damageLevel = state.towerUpgrades.damage;
+    const rangeLevel = state.towerUpgrades.range;
+    const fireRateLevel = state.towerUpgrades.fireRate;
+    const damageMultiplier = getDamageMultiplier(damageLevel);
+    const rangeMultiplier = getRangeMultiplier(rangeLevel);
+    const fireRateMultiplier = getFireRateMultiplier(fireRateLevel);
 
     return {
         damage: {
