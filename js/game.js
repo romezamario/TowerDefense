@@ -51,7 +51,7 @@ export const startWave = () => {
     if (state.lives <= 0) return;
     stopSpawns();
 
-    state.wave += 1;
+    state.wave = Number(state.wave) + 1;
     if (state.wave % 10 === 0) {
         triggerSpecialAttack();
     }
