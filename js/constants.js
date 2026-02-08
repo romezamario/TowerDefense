@@ -69,6 +69,12 @@ export const getTowerStats = (upgradeState = {}) => {
     };
 };
 
+export const getTowerCost = (towerCount = 0) => {
+    const safeCount = Number.isFinite(towerCount) ? towerCount : 0;
+    const cost = towerProfile.cost * Math.log2(safeCount + 2);
+    return Math.max(1, Math.round(cost));
+};
+
 export const levels = [
     {
         name: 'Nivel 1',
