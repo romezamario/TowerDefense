@@ -12,6 +12,32 @@ let cachedPathWidth = 0;
 let cachedPathHeight = 0;
 let uiDirty = false;
 
+const getTowerStatsCached = () => {
+    if (!state.towerStatsCache || state.towerStatsDirty) {
+        state.towerStatsCache = getTowerStats(state.towerUpgrades);
+        state.towerStatsDirty = false;
+    }
+    return state.towerStatsCache;
+};
+
+const findClosestTower = (x, y, maxDistance) => {
+    let closestTower = null;
+    let minDistSq = Infinity;
+    const maxDistSq = maxDistance ** 2;
+
+    for (const tower of towers) {
+        const dx = tower.x - x;
+        const dy = tower.y - y;
+        const distSq = (dx * dx) + (dy * dy);
+        if (distSq < maxDistSq && distSq < minDistSq) {
+            closestTower = tower;
+            minDistSq = distSq;
+        }
+    }
+
+    return closestTower;
+};
+
 const stopSpawns = () => {
     if (nextWaveTimeoutId) {
         clearTimeout(nextWaveTimeoutId);
@@ -148,16 +174,7 @@ export const handleCanvasClick = (event, canvas) => {
     const x = (event.clientX - rect.left) * scaleX;
     const y = (event.clientY - rect.top) * scaleY;
 
-    let clickedTower = null;
-    let minDist = Infinity;
-
-    for (const tower of towers) {
-        const dist = Math.hypot(tower.x - x, tower.y - y);
-        if (dist < 20 && dist < minDist) {
-            clickedTower = tower;
-            minDist = dist;
-        }
-    }
+    const clickedTower = findClosestTower(x, y, 20);
 
     if (clickedTower) {
         state.selectedTowerId = clickedTower.id;
@@ -166,17 +183,7 @@ export const handleCanvasClick = (event, canvas) => {
     }
 
     if (state.selectedTowerType === null) {
-        let closestTower = null;
-        let minDist = Infinity;
-
-        for (const tower of towers) {
-            const dist = Math.hypot(tower.x - x, tower.y - y);
-            if (dist < 20 && dist < minDist) {
-                closestTower = tower;
-                minDist = dist;
-            }
-        }
-
+        const closestTower = findClosestTower(x, y, 20);
         state.selectedTowerId = closestTower ? closestTower.id : null;
         updateUI();
         return;
@@ -187,16 +194,22 @@ export const handleCanvasClick = (event, canvas) => {
     if (state.money >= cost) {
         // Verificar que no esté muy cerca del camino
         let tooClose = false;
+        const pathMinDistSq = 50 ** 2;
         for (const point of path) {
-            if (Math.hypot(point.x - x, point.y - y) < 50) {
+            const dx = point.x - x;
+            const dy = point.y - y;
+            if ((dx * dx) + (dy * dy) < pathMinDistSq) {
                 tooClose = true;
                 break;
             }
         }
 
         // Verificar que no esté sobre otra torre
+        const towerMinDistSq = 40 ** 2;
         for (const tower of towers) {
-            if (Math.hypot(tower.x - x, tower.y - y) < 40) {
+            const dx = tower.x - x;
+            const dy = tower.y - y;
+            if ((dx * dx) + (dy * dy) < towerMinDistSq) {
                 tooClose = true;
                 break;
             }
@@ -219,6 +232,7 @@ export const resetGame = () => {
     state.selectedTowerType = 0;
     state.selectedTowerId = null;
     state.gameRunning = false;
+    state.towerStatsDirty = true;
     stopSpawns();
 
     towers.length = 0;
@@ -347,7 +361,7 @@ export const gameLoop = (currentTime) => {
     if (pathCanvas) {
         ctx.drawImage(pathCanvas, 0, 0);
     }
-    const towerStats = getTowerStats(state.towerUpgrades);
+    const towerStats = getTowerStatsCached();
     rebuildEnemySpatialIndex();
     updateTowers(currentTime, towerStats);
     updateProjectiles(towerStats);
