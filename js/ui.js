@@ -38,13 +38,9 @@ export const updateUI = () => {
     document.getElementById('lives').textContent = state.lives;
     document.getElementById('wave').textContent = state.wave;
     const towerCost = getTowerCost(towers.length);
-    const towerCostElement = document.getElementById('towerCost');
+    const towerCostElement = document.getElementById('nextTowerCost');
     if (towerCostElement) {
         towerCostElement.textContent = towerCost;
-    }
-    const towerButton = document.querySelector('.tower-btn[data-tower-type]');
-    if (towerButton) {
-        towerButton.disabled = state.money < towerCost;
     }
     renderUpgradePanel();
 
