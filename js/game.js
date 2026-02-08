@@ -62,8 +62,8 @@ export const startWave = () => {
     const enemyCount = Math.round((10 + (state.wave * 3)) * level.enemyCountMultiplier);
     let spawned = 0;
 
-    const shooterChance = state.wave >= 5
-        ? Math.min(0.45, 0.1 + (state.wave - 5) * 0.05)
+    const shooterChance = state.wave >= 2
+        ? Math.min(0.45, 0.1 + (state.wave - 2) * 0.05)
         : 0;
 
     spawnIntervalId = setInterval(() => {
