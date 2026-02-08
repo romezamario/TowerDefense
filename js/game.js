@@ -161,8 +161,6 @@ export const handleCanvasClick = (event, canvas) => {
 
     if (clickedTower) {
         state.selectedTowerId = clickedTower.id;
-        state.selectedTowerType = null;
-        setSelectedTower(null);
         updateUI();
         return;
     }
