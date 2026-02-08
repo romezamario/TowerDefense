@@ -1,5 +1,5 @@
-import { getTowerStats, path } from './constants.js';
-import { enemies, projectiles, state } from './state.js';
+import { path } from './constants.js';
+import { enemies, projectiles } from './state.js';
 
 let ctx = null;
 const enemySpatialGrid = {
@@ -59,8 +59,8 @@ export class Tower {
         this.angle = 0;
     }
 
-    draw(showRange = false) {
-        const type = getTowerStats(state.towerUpgrades);
+    draw(showRange = false, towerStats) {
+        const type = towerStats;
 
         // Dibujar rango (solo si está seleccionada)
         if (showRange) {
@@ -97,10 +97,10 @@ export class Tower {
         ctx.restore();
     }
 
-    findTarget() {
+    findTarget(towerStats) {
         let closest = null;
         let minDist = Infinity;
-        const type = getTowerStats(state.towerUpgrades);
+        const type = towerStats;
 
         const nearbyEnemies = getEnemiesInRange(this.x, this.y, type.range);
 
@@ -119,15 +119,16 @@ export class Tower {
         }
     }
 
-    update(currentTime) {
-        this.findTarget();
-        const type = getTowerStats(state.towerUpgrades);
+    update(currentTime, towerStats) {
+        this.findTarget(towerStats);
+        const type = towerStats;
 
         if (this.target && currentTime - this.lastFire > type.fireRate) {
             projectiles.push(new Projectile(
                 this.x,
                 this.y,
-                this.target
+                this.target,
+                type
             ));
             this.lastFire = currentTime;
         }
@@ -210,15 +211,15 @@ export class Enemy {
 }
 
 export class Projectile {
-    constructor(x, y, target) {
+    constructor(x, y, target, towerStats) {
         this.x = x;
         this.y = y;
         this.target = target;
-        this.speed = getTowerStats(state.towerUpgrades).projectileSpeed;
+        this.speed = towerStats.projectileSpeed;
     }
 
-    draw() {
-        const type = getTowerStats(state.towerUpgrades);
+    draw(towerStats) {
+        const type = towerStats;
         ctx.fillStyle = type.color;
         ctx.shadowColor = type.color;
         ctx.shadowBlur = 10;
@@ -227,7 +228,7 @@ export class Projectile {
         ctx.fill();
     }
 
-    update() {
+    update(towerStats) {
         if (!this.target || this.target.health <= 0) return true;
 
         const dx = this.target.x - this.x;
@@ -236,7 +237,7 @@ export class Projectile {
 
         if (dist < 10) {
             // Impacto
-            const type = getTowerStats(state.towerUpgrades);
+            const type = towerStats;
 
             if (type.aoe) {
                 // Daño en área
