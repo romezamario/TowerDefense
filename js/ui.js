@@ -1,4 +1,4 @@
-import { towerTypes } from './constants.js';
+import { getTowerCost } from './constants.js';
 import { state, towers } from './state.js';
 import { getUpgradeCost, getUpgradeSnapshot } from './upgrades.js';
 
@@ -37,6 +37,15 @@ export const updateUI = () => {
     document.getElementById('money').textContent = state.money;
     document.getElementById('lives').textContent = state.lives;
     document.getElementById('wave').textContent = state.wave;
+    const towerCost = getTowerCost(towers.length);
+    const towerCostElement = document.getElementById('towerCost');
+    if (towerCostElement) {
+        towerCostElement.textContent = towerCost;
+    }
+    const towerButton = document.querySelector('.tower-btn[data-tower-type]');
+    if (towerButton) {
+        towerButton.disabled = state.money < towerCost;
+    }
     renderUpgradePanel();
 
     if (state.lives <= 0) {

@@ -1,4 +1,4 @@
-import { getTowerStats, levels, path, towerProfile } from './constants.js';
+import { getTowerCost, getTowerStats, levels, path } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
@@ -30,13 +30,6 @@ export const initializeGame = (renderingContext) => {
 };
 
 export const selectTower = (type) => {
-    if (towers.length > 0) {
-        state.selectedTowerId = towers[0].id;
-        state.selectedTowerType = null;
-        setSelectedTower(null);
-        return;
-    }
-
     state.selectedTowerType = type;
     setSelectedTower(type);
 };
@@ -123,6 +116,7 @@ const triggerSpecialAttack = () => {
     }
 
     showSpecialAttackBanner(attackType, destroyCount);
+    uiDirty = true;
 };
 
 export const handleCanvasClick = (event, canvas) => {
@@ -132,21 +126,22 @@ export const handleCanvasClick = (event, canvas) => {
     const x = (event.clientX - rect.left) * scaleX;
     const y = (event.clientY - rect.top) * scaleY;
 
-    if (towers.length > 0) {
-        let closestTower = null;
-        let minDist = Infinity;
+    let clickedTower = null;
+    let minDist = Infinity;
 
-        for (const tower of towers) {
-            const dist = Math.hypot(tower.x - x, tower.y - y);
-            if (dist < 20 && dist < minDist) {
-                closestTower = tower;
-                minDist = dist;
-            }
+    for (const tower of towers) {
+        const dist = Math.hypot(tower.x - x, tower.y - y);
+        if (dist < 20 && dist < minDist) {
+            clickedTower = tower;
+            minDist = dist;
         }
+    }
 
-        state.selectedTowerId = closestTower ? closestTower.id : towers[0].id;
+    if (clickedTower) {
+        state.selectedTowerId = clickedTower.id;
         state.selectedTowerType = null;
         setSelectedTower(null);
+        updateUI();
         return;
     }
 
@@ -167,7 +162,7 @@ export const handleCanvasClick = (event, canvas) => {
         return;
     }
 
-    const cost = towerProfile.cost;
+    const cost = getTowerCost(towers.length);
 
     if (state.money >= cost) {
         // Verificar que no esté muy cerca del camino
