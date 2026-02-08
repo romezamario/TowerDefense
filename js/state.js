@@ -15,7 +15,9 @@ export const state = {
         aoe: 0
     },
     gameRunning: false,
-    nextWaveScheduled: false
+    nextWaveScheduled: false,
+    towerStatsCache: null,
+    towerStatsDirty: true
 };
 
 export const towers = [];

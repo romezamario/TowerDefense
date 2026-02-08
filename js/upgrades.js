@@ -44,6 +44,7 @@ export const applyUpgrade = (upgradeKey) => {
 
     state.money -= cost;
     state.towerUpgrades[config.levelKey] += 1;
+    state.towerStatsDirty = true;
     return true;
 };
 

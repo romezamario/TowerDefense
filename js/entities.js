@@ -108,16 +108,19 @@ export class Tower {
 
     findTarget(towerStats) {
         let closest = null;
-        let minDist = Infinity;
+        let minDistSq = Infinity;
         const type = towerStats;
+        const rangeSq = type.range * type.range;
 
         const nearbyEnemies = getEnemiesInRange(this.x, this.y, type.range);
 
         for (const enemy of nearbyEnemies) {
-            const dist = Math.hypot(enemy.x - this.x, enemy.y - this.y);
-            if (dist < type.range && dist < minDist) {
+            const dx = enemy.x - this.x;
+            const dy = enemy.y - this.y;
+            const distSq = (dx * dx) + (dy * dy);
+            if (distSq < rangeSq && distSq < minDistSq) {
                 closest = enemy;
-                minDist = dist;
+                minDistSq = distSq;
             }
         }
 
@@ -256,13 +259,16 @@ export class Enemy {
 
     findTowerTarget(towers) {
         let closest = null;
-        let minDist = Infinity;
+        let minDistSq = Infinity;
+        const rangeSq = this.range * this.range;
 
         for (const tower of towers) {
-            const dist = Math.hypot(tower.x - this.x, tower.y - this.y);
-            if (dist < this.range && dist < minDist) {
+            const dx = tower.x - this.x;
+            const dy = tower.y - this.y;
+            const distSq = (dx * dx) + (dy * dy);
+            if (distSq < rangeSq && distSq < minDistSq) {
                 closest = tower;
-                minDist = dist;
+                minDistSq = distSq;
             }
         }
 
