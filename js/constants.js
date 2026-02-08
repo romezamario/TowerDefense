@@ -21,6 +21,39 @@ export const towerTypes = [
     }
 ];
 
+export const enemyTypes = [
+    {
+        name: 'Rojo',
+        bodyColor: '#ff006e',
+        strokeColor: '#ffbe0b',
+        eyeColor: '#ffbe0b',
+        shadowColor: '#ff006e',
+        healthMultiplier: 1,
+        speedMultiplier: 1,
+        rewardMultiplier: 1
+    },
+    {
+        name: 'Azul',
+        bodyColor: '#3a86ff',
+        strokeColor: '#00bbf9',
+        eyeColor: '#caf0f8',
+        shadowColor: '#3a86ff',
+        healthMultiplier: 1,
+        speedMultiplier: 1.35,
+        rewardMultiplier: 1.05
+    },
+    {
+        name: 'Verde',
+        bodyColor: '#00c853',
+        strokeColor: '#b2ff59',
+        eyeColor: '#d9f99d',
+        shadowColor: '#00c853',
+        healthMultiplier: 1.6,
+        speedMultiplier: 0.9,
+        rewardMultiplier: 1.15
+    }
+];
+
 export const upgradeLevels = {
     damage: {
         base: 20,

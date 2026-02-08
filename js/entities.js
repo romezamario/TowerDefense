@@ -1,4 +1,4 @@
-import { path } from './constants.js';
+import { enemyTypes, path } from './constants.js';
 import { enemies, projectiles } from './state.js';
 
 let ctx = null;
@@ -157,6 +157,7 @@ Tower.nextId = 1;
 
 export class Enemy {
     constructor(waveNum, levelConfig = {}, options = {}) {
+        const enemyType = options.type ?? enemyTypes[0];
         this.pathIndex = 0;
         this.x = path[0].x;
         this.y = path[0].y;
@@ -164,16 +165,24 @@ export class Enemy {
         const speedMultiplier = levelConfig.enemySpeedMultiplier ?? 1;
         const rewardMultiplier = levelConfig.rewardMultiplier ?? 1;
         const damageMultiplier = levelConfig.enemyDamageMultiplier ?? 1;
-        this.health = Math.round((50 + (waveNum * 15)) * healthMultiplier);
+        this.health = Math.round(
+            (50 + (waveNum * 15)) * healthMultiplier * (enemyType.healthMultiplier ?? 1)
+        );
         this.maxHealth = this.health;
-        this.speed = (1 + (waveNum * 0.1)) * speedMultiplier * 1.1;
-        this.value = Math.round((25 + (waveNum * 5)) * rewardMultiplier);
+        this.speed = (1 + (waveNum * 0.1)) * speedMultiplier * 1.1 * (enemyType.speedMultiplier ?? 1);
+        this.value = Math.round((25 + (waveNum * 5)) * rewardMultiplier * (enemyType.rewardMultiplier ?? 1));
         this.size = 15;
         this.canShoot = options.canShoot ?? false;
         this.fireRate = 1400;
         this.range = 180;
         this.lastShot = 0;
         this.damage = Math.max(1, Math.round((4 + (waveNum * 1.4)) * damageMultiplier));
+        this.colors = {
+            body: enemyType.bodyColor,
+            stroke: enemyType.strokeColor,
+            eye: enemyType.eyeColor,
+            shadow: enemyType.shadowColor
+        };
     }
 
     draw() {
@@ -189,10 +198,10 @@ export class Enemy {
         ctx.translate(this.x, this.y);
 
         // Forma alienígena
-        ctx.fillStyle = '#ff006e';
-        ctx.strokeStyle = '#ffbe0b';
+        ctx.fillStyle = this.colors.body;
+        ctx.strokeStyle = this.colors.stroke;
         ctx.lineWidth = 2;
-        ctx.shadowColor = '#ff006e';
+        ctx.shadowColor = this.colors.shadow;
         ctx.shadowBlur = 10;
 
         ctx.beginPath();
@@ -204,7 +213,7 @@ export class Enemy {
         ctx.stroke();
 
         // Ojos
-        ctx.fillStyle = '#ffbe0b';
+        ctx.fillStyle = this.colors.eye;
         ctx.beginPath();
         ctx.arc(-5, -3, 3, 0, Math.PI * 2);
         ctx.arc(5, -3, 3, 0, Math.PI * 2);
