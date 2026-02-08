@@ -15,6 +15,12 @@ export const towerProfile = {
     color: '#00fff5'
 };
 
+export const towerTypes = [
+    {
+        ...towerProfile
+    }
+];
+
 export const upgradeLevels = {
     damage: {
         base: 20,

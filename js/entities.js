@@ -49,13 +49,11 @@ export const setRenderContext = (renderingContext) => {
 };
 
 export class Tower {
-    constructor(x, y) {
+    constructor(x, y, type = 0) {
         this.id = Tower.nextId;
         Tower.nextId += 1;
         this.x = x;
         this.y = y;
-        this.type = type;
-        this.level = 0;
         this.lastFire = 0;
         this.target = null;
         this.angle = 0;
