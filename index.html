@@ -300,6 +300,17 @@
             text-shadow: 0 0 10px var(--glow-pink);
         }
 
+        .upgrade-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .upgrade-grid .tower-btn {
+            margin: 0;
+        }
+
         .tower-btn {
             width: 100%;
             padding: 15px;
@@ -492,6 +503,21 @@
                 max-height: 44vh;
             }
 
+            .upgrade-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+
+            .upgrade-grid .tower-btn {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+
+            .upgrade-grid .tower-info {
+                font-size: 0.65rem;
+            }
+
             .home-title {
                 font-size: 1.7rem;
             }
@@ -533,6 +559,19 @@
 
             h2 {
                 font-size: 1rem;
+            }
+
+            .upgrade-grid {
+                gap: 6px;
+            }
+
+            .upgrade-grid .tower-btn {
+                padding: 6px;
+                font-size: 0.8rem;
+            }
+
+            .upgrade-grid .tower-info {
+                font-size: 0.6rem;
             }
 
             .tower-btn {
@@ -607,21 +646,23 @@
 
                 <div id="sidebar">
                     <h2>🛠️ Mejoras 🛠️</h2>
-                    <button class="tower-btn" data-upgrade="damage">
-                        Mejorar daño
-                        <div class="tower-info">Nivel: <span id="damageLevel">0</span> · Costo: <span id="damageCost">120</span></div>
-                        <div class="tower-info" id="damageValue">Daño actual: +0%</div>
-                    </button>
-                    <button class="tower-btn" data-upgrade="range">
-                        Mejorar alcance
-                        <div class="tower-info">Nivel: <span id="rangeLevel">0</span> · Costo: <span id="rangeCost">110</span></div>
-                        <div class="tower-info" id="rangeValue">Alcance actual: +0%</div>
-                    </button>
-                    <button class="tower-btn" data-upgrade="fireRate">
-                        Mejorar rapidez
-                        <div class="tower-info">Nivel: <span id="fireRateLevel">0</span> · Costo: <span id="fireRateCost">130</span></div>
-                        <div class="tower-info" id="fireRateValue">Cadencia actual: -0%</div>
-                    </button>
+                    <div class="upgrade-grid">
+                        <button class="tower-btn" data-upgrade="damage">
+                            Mejorar daño
+                            <div class="tower-info">Nivel: <span id="damageLevel">0</span> · Costo: <span id="damageCost">120</span></div>
+                            <div class="tower-info" id="damageValue">Daño actual: +0%</div>
+                        </button>
+                        <button class="tower-btn" data-upgrade="range">
+                            Mejorar alcance
+                            <div class="tower-info">Nivel: <span id="rangeLevel">0</span> · Costo: <span id="rangeCost">110</span></div>
+                            <div class="tower-info" id="rangeValue">Alcance actual: +0%</div>
+                        </button>
+                        <button class="tower-btn" data-upgrade="fireRate">
+                            Mejorar rapidez
+                            <div class="tower-info">Nivel: <span id="fireRateLevel">0</span> · Costo: <span id="fireRateCost">130</span></div>
+                            <div class="tower-info" id="fireRateValue">Cadencia actual: -0%</div>
+                        </button>
+                    </div>
                     <h2>⚔️ Torres ⚔️</h2>
                     <button class="tower-btn" data-tower-type="0">
                         CENTINELA
