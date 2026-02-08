@@ -1,6 +1,6 @@
 import { getTowerCost, getTowerStats, levels, path } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
-import { enemies, projectiles, state, towers } from './state.js';
+import { enemies, enemyProjectiles, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
 
 let ctx = null;
@@ -62,8 +62,13 @@ export const startWave = () => {
     const enemyCount = Math.round((10 + (state.wave * 3)) * level.enemyCountMultiplier);
     let spawned = 0;
 
+    const shooterChance = state.wave >= 5
+        ? Math.min(0.45, 0.1 + (state.wave - 5) * 0.05)
+        : 0;
+
     spawnIntervalId = setInterval(() => {
-        enemies.push(new Enemy(state.wave, level));
+        const canShoot = Math.random() < shooterChance;
+        enemies.push(new Enemy(state.wave, level, { canShoot }));
         spawned += 1;
 
         if (spawned >= enemyCount) {
@@ -204,6 +209,7 @@ export const resetGame = () => {
     towers.length = 0;
     enemies.length = 0;
     projectiles.length = 0;
+    enemyProjectiles.length = 0;
 
     resetSelectionUI();
     updateUI();
@@ -245,8 +251,17 @@ const drawPath = () => {
 };
 
 const updateTowers = (currentTime, towerStats) => {
-    for (const tower of towers) {
+    for (let i = towers.length - 1; i >= 0; i -= 1) {
+        const tower = towers[i];
         tower.update(currentTime, towerStats);
+        if (tower.health <= 0) {
+            if (tower.id === state.selectedTowerId) {
+                state.selectedTowerId = null;
+            }
+            towers.splice(i, 1);
+            uiDirty = true;
+            continue;
+        }
         tower.draw(tower.id === state.selectedTowerId, towerStats);
     }
 };
@@ -261,7 +276,7 @@ const updateProjectiles = (towerStats) => {
     }
 };
 
-const updateEnemies = () => {
+const updateEnemies = (currentTime) => {
     for (let i = enemies.length - 1; i >= 0; i -= 1) {
         const enemy = enemies[i];
 
@@ -280,7 +295,18 @@ const updateEnemies = () => {
                 return;
             }
         } else {
+            enemy.updateAttack(currentTime, towers, enemyProjectiles);
             enemy.draw();
+        }
+    }
+};
+
+const updateEnemyProjectiles = () => {
+    for (let i = enemyProjectiles.length - 1; i >= 0; i -= 1) {
+        if (enemyProjectiles[i].update()) {
+            enemyProjectiles.splice(i, 1);
+        } else {
+            enemyProjectiles[i].draw();
         }
     }
 };
@@ -310,7 +336,8 @@ export const gameLoop = (currentTime) => {
     rebuildEnemySpatialIndex();
     updateTowers(currentTime, towerStats);
     updateProjectiles(towerStats);
-    updateEnemies();
+    updateEnemies(currentTime);
+    updateEnemyProjectiles();
     checkWaveEnd();
     if (uiDirty) {
         updateUI();
