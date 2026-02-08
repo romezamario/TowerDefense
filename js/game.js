@@ -1,4 +1,4 @@
-import { levels, path, towerProfile } from './constants.js';
+import { getTowerStats, levels, path, towerProfile } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
@@ -272,19 +272,19 @@ const drawPath = () => {
     }
 };
 
-const updateTowers = (currentTime) => {
+const updateTowers = (currentTime, towerStats) => {
     for (const tower of towers) {
-        tower.update(currentTime);
-        tower.draw(tower.id === state.selectedTowerId);
+        tower.update(currentTime, towerStats);
+        tower.draw(tower.id === state.selectedTowerId, towerStats);
     }
 };
 
-const updateProjectiles = () => {
+const updateProjectiles = (towerStats) => {
     for (let i = projectiles.length - 1; i >= 0; i -= 1) {
-        if (projectiles[i].update()) {
+        if (projectiles[i].update(towerStats)) {
             projectiles.splice(i, 1);
         } else {
-            projectiles[i].draw();
+            projectiles[i].draw(towerStats);
         }
     }
 };
@@ -334,9 +334,10 @@ export const gameLoop = (currentTime) => {
     if (pathCanvas) {
         ctx.drawImage(pathCanvas, 0, 0);
     }
+    const towerStats = getTowerStats(state.towerUpgrades);
     rebuildEnemySpatialIndex();
-    updateTowers(currentTime);
-    updateProjectiles();
+    updateTowers(currentTime, towerStats);
+    updateProjectiles(towerStats);
     updateEnemies();
     checkWaveEnd();
     if (uiDirty) {
