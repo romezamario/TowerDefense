@@ -45,8 +45,6 @@ export const updateUI = () => {
         document.getElementById('gameOver').style.display = 'block';
         state.gameRunning = false;
     }
-
-    updateUpgradeUI();
 };
 
 export const resetSelectionUI = () => {
@@ -115,32 +113,4 @@ export const showSpecialAttackBanner = (attackType, destroyedCount) => {
         banner.style.opacity = '0';
     }, 3000);
     banner.dataset.timeoutId = String(timeoutId);
-};
-
-const updateUpgradeUI = () => {
-    const towerLabel = document.getElementById('selectedTowerLabel');
-    const levelValue = document.getElementById('towerLevel');
-    const upgradeCostValue = document.getElementById('upgradeCost');
-    const upgradeButton = document.getElementById('upgradeBtn');
-
-    if (!towerLabel || !levelValue || !upgradeCostValue || !upgradeButton) {
-        return;
-    }
-
-    const selectedTower = towers.find((tower) => tower.id === state.selectedTowerId);
-    if (!selectedTower) {
-        towerLabel.textContent = 'Selecciona una torre para mejorar.';
-        levelValue.textContent = '-';
-        upgradeCostValue.textContent = '-';
-        upgradeButton.disabled = true;
-        return;
-    }
-
-    const towerType = towerTypes[selectedTower.type];
-    const cost = getUpgradeCost(towerType.cost, selectedTower.level);
-
-    towerLabel.textContent = `Torre seleccionada: ${towerType.name}`;
-    levelValue.textContent = `${selectedTower.level + 1}`;
-    upgradeCostValue.textContent = `${cost}`;
-    upgradeButton.disabled = state.money < cost;
 };

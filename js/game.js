@@ -2,7 +2,6 @@ import { levels, path, towerProfile, towerTypes } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
-import { getUpgradeCost } from './upgrades.js';
 
 let ctx = null;
 let nextWaveTimeoutId = null;
@@ -196,28 +195,6 @@ export const handleCanvasClick = (event, canvas) => {
             updateUI();
         }
     }
-};
-
-export const upgradeSelectedTower = () => {
-    if (state.selectedTowerId === null) {
-        return;
-    }
-
-    const tower = towers.find((item) => item.id === state.selectedTowerId);
-    if (!tower) {
-        return;
-    }
-
-    const baseCost = towerTypes[tower.type].cost;
-    const cost = getUpgradeCost(baseCost, tower.level);
-
-    if (state.money < cost) {
-        return;
-    }
-
-    state.money -= cost;
-    tower.level += 1;
-    updateUI();
 };
 
 export const resetGame = () => {

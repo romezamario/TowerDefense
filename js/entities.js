@@ -54,8 +54,6 @@ export class Tower {
         Tower.nextId += 1;
         this.x = x;
         this.y = y;
-        this.type = type;
-        this.level = 0;
         this.lastFire = 0;
         this.target = null;
         this.angle = 0;
