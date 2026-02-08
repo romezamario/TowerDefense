@@ -68,25 +68,25 @@ export const getUpgradeSnapshot = () => {
             level: state.towerUpgrades.damage,
             cost: getUpgradeCost(upgradeConfigs.damage.baseCost, state.towerUpgrades.damage),
             label: upgradeConfigs.damage.label,
-            valueText: `${upgradeConfigs.damage.label} actual: +${getPercentChange(currentStats.damage, baseStats.damage)}%`
+            valueText: `Actual: +${getPercentChange(currentStats.damage, baseStats.damage)}%`
         },
         range: {
             level: state.towerUpgrades.range,
             cost: getUpgradeCost(upgradeConfigs.range.baseCost, state.towerUpgrades.range),
             label: upgradeConfigs.range.label,
-            valueText: `${upgradeConfigs.range.label} actual: +${getPercentChange(currentStats.range, baseStats.range)}%`
+            valueText: `Actual: +${getPercentChange(currentStats.range, baseStats.range)}%`
         },
         fireRate: {
             level: state.towerUpgrades.fireRate,
             cost: getUpgradeCost(upgradeConfigs.fireRate.baseCost, state.towerUpgrades.fireRate),
             label: upgradeConfigs.fireRate.label,
-            valueText: `${upgradeConfigs.fireRate.label} actual: -${getPercentChange(currentStats.fireRate, baseStats.fireRate, true)}%`
+            valueText: `Actual: -${getPercentChange(currentStats.fireRate, baseStats.fireRate, true)}%`
         },
         health: {
             level: state.towerUpgrades.health,
             cost: getUpgradeCost(upgradeConfigs.health.baseCost, state.towerUpgrades.health),
             label: upgradeConfigs.health.label,
-            valueText: `${upgradeConfigs.health.label} actual: +${getPercentChange(currentStats.health, baseStats.health)}%`
+            valueText: `Actual: +${getPercentChange(currentStats.health, baseStats.health)}%`
         }
     };
 };
