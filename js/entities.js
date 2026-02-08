@@ -158,6 +158,9 @@ Tower.nextId = 1;
 export class Enemy {
     constructor(waveNum, levelConfig = {}, options = {}) {
         const enemyType = options.type ?? enemyTypes[0];
+        const isBoss = options.isBoss ?? false;
+        const bossLevel = options.bossLevel ?? 1;
+        const bossScale = isBoss ? 1.6 ** Math.max(0, bossLevel - 1) : 1;
         this.pathIndex = 0;
         this.x = path[0].x;
         this.y = path[0].y;
@@ -165,24 +168,33 @@ export class Enemy {
         const speedMultiplier = levelConfig.enemySpeedMultiplier ?? 1;
         const rewardMultiplier = levelConfig.rewardMultiplier ?? 1;
         const damageMultiplier = levelConfig.enemyDamageMultiplier ?? 1;
-        this.health = Math.round(
-            (50 + (waveNum * 15)) * healthMultiplier * (enemyType.healthMultiplier ?? 1)
-        );
+        const baseHealth = (50 + (waveNum * 15)) * healthMultiplier * (enemyType.healthMultiplier ?? 1);
+        this.health = Math.round(baseHealth * (isBoss ? 6 * bossScale : 1));
         this.maxHealth = this.health;
-        this.speed = (1 + (waveNum * 0.1)) * speedMultiplier * 1.1 * (enemyType.speedMultiplier ?? 1);
-        this.value = Math.round((25 + (waveNum * 5)) * rewardMultiplier * (enemyType.rewardMultiplier ?? 1));
-        this.size = 15;
+        const speedBase = (1 + (waveNum * 0.1)) * speedMultiplier * 1.1 * (enemyType.speedMultiplier ?? 1);
+        this.speed = speedBase * (isBoss ? 0.85 : 1);
+        const baseValue = (25 + (waveNum * 5)) * rewardMultiplier * (enemyType.rewardMultiplier ?? 1);
+        this.value = Math.round(baseValue * (isBoss ? 5 * bossScale : 1));
+        this.size = isBoss ? 24 : 15;
         this.canShoot = options.canShoot ?? false;
-        this.fireRate = 1400;
-        this.range = 180;
+        this.fireRate = isBoss ? 900 : 1400;
+        this.range = isBoss ? 240 : 180;
         this.lastShot = 0;
-        this.damage = Math.max(1, Math.round((4 + (waveNum * 1.4)) * damageMultiplier));
-        this.colors = {
-            body: enemyType.bodyColor,
-            stroke: enemyType.strokeColor,
-            eye: enemyType.eyeColor,
-            shadow: enemyType.shadowColor
-        };
+        const baseDamage = Math.max(1, Math.round((4 + (waveNum * 1.4)) * damageMultiplier));
+        this.damage = Math.round(baseDamage * (isBoss ? 4 * bossScale : 1));
+        this.colors = isBoss
+            ? {
+                body: '#7b2cbf',
+                stroke: '#c77dff',
+                eye: '#e0aaff',
+                shadow: '#5a189a'
+            }
+            : {
+                body: enemyType.bodyColor,
+                stroke: enemyType.strokeColor,
+                eye: enemyType.eyeColor,
+                shadow: enemyType.shadowColor
+            };
     }
 
     draw() {
