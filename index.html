@@ -194,7 +194,7 @@
             background: linear-gradient(180deg, var(--bg-darker) 0%, transparent 100%);
             padding: 20px;
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             gap: 20px;
             border-bottom: 2px solid var(--neon-cyan);
@@ -229,6 +229,33 @@
             font-size: 1.2rem;
             justify-content: space-between;
             margin-left: auto;
+        }
+
+        #nextTowerStatus {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 10px 20px;
+            background: rgba(255, 190, 11, 0.18);
+            border: 2px solid var(--neon-yellow);
+            border-radius: 10px;
+            box-shadow: 0 0 18px rgba(255, 190, 11, 0.4);
+            min-width: 160px;
+        }
+
+        .next-tower-label {
+            font-size: 0.7rem;
+            opacity: 0.85;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.85);
+        }
+
+        .next-tower-value {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--neon-yellow);
+            text-shadow: 0 0 10px rgba(255, 190, 11, 0.9);
         }
 
         .stat {
@@ -411,9 +438,9 @@
             }
 
             #header {
-                flex-direction: column;
+                flex-wrap: wrap;
+                justify-content: space-between;
                 gap: 15px;
-                text-align: center;
                 padding: 12px 12px;
             }
 
@@ -429,12 +456,20 @@
                 width: 100%;
             }
 
+            #nextTowerStatus {
+                align-items: flex-start;
+            }
+
             .stat {
                 padding: 6px 12px;
                 min-width: 100px;
             }
 
             .stat-value {
+                font-size: 1.1rem;
+            }
+
+            .next-tower-value {
                 font-size: 1.1rem;
             }
 
@@ -655,11 +690,11 @@
     <div id="gameScreen" class="hidden">
         <div id="gameContainer">
             <div id="header">
+                <div id="nextTowerStatus">
+                    <div class="next-tower-label">Costo de torre</div>
+                    <div class="next-tower-value" id="nextTowerCost">150</div>
+                </div>
                 <div id="stats">
-                    <div class="stat">
-                        <div class="stat-label">Próxima torre</div>
-                        <div class="stat-value" id="nextTowerCost">150</div>
-                    </div>
                     <div class="stat">
                         <div class="stat-label">Créditos</div>
                         <div class="stat-value" id="money">500</div>
