@@ -1,4 +1,4 @@
-import { getTowerCost, getTowerStats, levels, path } from './constants.js';
+import { enemyTypes, getTowerCost, getTowerStats, levels, path } from './constants.js';
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, enemyProjectiles, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
@@ -66,9 +66,20 @@ export const startWave = () => {
         ? Math.min(0.45, 0.1 + (state.wave - 2) * 0.05)
         : 0;
 
+    const pickEnemyType = () => {
+        const roll = Math.random();
+        if (roll < 0.5) {
+            return enemyTypes[0];
+        }
+        if (roll < 0.75) {
+            return enemyTypes[1];
+        }
+        return enemyTypes[2];
+    };
+
     spawnIntervalId = setInterval(() => {
         const canShoot = Math.random() < shooterChance;
-        enemies.push(new Enemy(state.wave, level, { canShoot }));
+        enemies.push(new Enemy(state.wave, level, { canShoot, type: pickEnemyType() }));
         spawned += 1;
 
         if (spawned >= enemyCount) {
