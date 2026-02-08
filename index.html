@@ -467,7 +467,25 @@
             #stats {
                 display: grid;
                 grid-template-columns: repeat(2, minmax(100px, 1fr));
-                gap: 8px;
+                gap: 4px;
+            }
+
+            .stat {
+                padding: 2px 4px;
+                min-width: 50px;
+                border-radius: 4px;
+                border-width: 1px;
+                box-shadow: 0 0 4px var(--glow-cyan);
+            }
+
+            .stat-label {
+                font-size: 0.2rem;
+                letter-spacing: 0.5px;
+            }
+
+            .stat-value {
+                font-size: 0.4rem;
+                text-shadow: 0 0 4px var(--neon-yellow);
             }
 
             #canvas {
@@ -490,12 +508,12 @@
             }
 
             .stat {
-                padding: 5px 8px;
-                min-width: 84px;
+                padding: 2px 4px;
+                min-width: 50px;
             }
 
             .stat-value {
-                font-size: 1rem;
+                font-size: 0.4rem;
             }
 
             #gameArea {
