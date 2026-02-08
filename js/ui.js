@@ -1,8 +1,6 @@
 import { towerTypes } from './constants.js';
 import { state, towers } from './state.js';
-import { getUpgradeCost } from './upgrades.js';
-import { state } from './state.js';
-import { getUpgradeSnapshot } from './upgrades.js';
+import { getUpgradeCost, getUpgradeSnapshot } from './upgrades.js';
 
 export const setSelectedTower = (type) => {
     document.querySelectorAll('.tower-btn[data-tower-type]').forEach((btn) => {

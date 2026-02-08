@@ -49,7 +49,7 @@ export const setRenderContext = (renderingContext) => {
 };
 
 export class Tower {
-    constructor(x, y) {
+    constructor(x, y, type = 0) {
         this.id = Tower.nextId;
         Tower.nextId += 1;
         this.x = x;

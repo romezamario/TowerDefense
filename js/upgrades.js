@@ -1,50 +1,37 @@
+import { upgradeLevels } from './constants.js';
+import { state } from './state.js';
+
 export const getUpgradeCost = (baseCost, level) => {
     const safeLevel = Number.isFinite(level) ? level : 0;
     const cost = baseCost * Math.log2(safeLevel + 2);
     return Math.max(1, Math.round(cost));
-import { towerTypes } from './constants.js';
-import { state } from './state.js';
-
-const baseTowerTypes = towerTypes.map((tower) => ({ ...tower }));
+};
 const COST_MULTIPLIER = 1.35;
 
 const upgradeConfigs = {
     damage: {
-        levelKey: 'damageLevel',
+        levelKey: 'damage',
         costKey: 'damageCost',
-        step: 0.12,
+        multiplier: upgradeLevels.damage.multiplier,
         label: 'Daño'
     },
     range: {
-        levelKey: 'rangeLevel',
+        levelKey: 'range',
         costKey: 'rangeCost',
-        step: 0.08,
+        multiplier: upgradeLevels.range.multiplier,
         label: 'Alcance'
     },
     fireRate: {
-        levelKey: 'fireRateLevel',
+        levelKey: 'fireRate',
         costKey: 'fireRateCost',
-        step: 0.06,
+        multiplier: upgradeLevels.fireRate.multiplier,
         label: 'Cadencia'
     }
 };
 
-const getDamageMultiplier = (level) => 1 + upgradeConfigs.damage.step * level;
-const getRangeMultiplier = (level) => 1 + upgradeConfigs.range.step * level;
-const getFireRateMultiplier = (level) => Math.max(0.5, 1 - upgradeConfigs.fireRate.step * level);
-
-const refreshTowerStats = () => {
-    const damageMultiplier = getDamageMultiplier(state.towerUpgrades.damageLevel);
-    const rangeMultiplier = getRangeMultiplier(state.towerUpgrades.rangeLevel);
-    const fireRateMultiplier = getFireRateMultiplier(state.towerUpgrades.fireRateLevel);
-
-    towerTypes.forEach((tower, index) => {
-        const base = baseTowerTypes[index];
-        tower.damage = Math.round(base.damage * damageMultiplier);
-        tower.range = Math.round(base.range * rangeMultiplier);
-        tower.fireRate = Math.max(120, Math.round(base.fireRate * fireRateMultiplier));
-    });
-};
+const getDamageMultiplier = (level) => upgradeConfigs.damage.multiplier ** level;
+const getRangeMultiplier = (level) => upgradeConfigs.range.multiplier ** level;
+const getFireRateMultiplier = (level) => upgradeConfigs.fireRate.multiplier ** level;
 
 export const applyUpgrade = (upgradeKey) => {
     const config = upgradeConfigs[upgradeKey];
@@ -60,14 +47,13 @@ export const applyUpgrade = (upgradeKey) => {
     state.money -= cost;
     state.towerUpgrades[config.levelKey] += 1;
     state.towerUpgrades[config.costKey] = Math.round(cost * COST_MULTIPLIER);
-    refreshTowerStats();
     return true;
 };
 
 export const getUpgradeSnapshot = () => {
-    const damageLevel = state.towerUpgrades.damageLevel;
-    const rangeLevel = state.towerUpgrades.rangeLevel;
-    const fireRateLevel = state.towerUpgrades.fireRateLevel;
+    const damageLevel = state.towerUpgrades.damage;
+    const rangeLevel = state.towerUpgrades.range;
+    const fireRateLevel = state.towerUpgrades.fireRate;
     const damageMultiplier = getDamageMultiplier(damageLevel);
     const rangeMultiplier = getRangeMultiplier(rangeLevel);
     const fireRateMultiplier = getFireRateMultiplier(fireRateLevel);
