@@ -52,7 +52,8 @@ export const startWave = () => {
     stopSpawns();
 
     state.wave = Number(state.wave) + 1;
-    if (state.wave % 10 === 0) {
+    const isBossWave = state.wave % 10 === 0;
+    if (isBossWave) {
         triggerSpecialAttack();
     }
     state.gameRunning = true;
@@ -76,6 +77,11 @@ export const startWave = () => {
         }
         return enemyTypes[2];
     };
+
+    if (isBossWave) {
+        const bossLevel = Math.floor(state.wave / 10);
+        enemies.push(new Enemy(state.wave, level, { isBoss: true, bossLevel, canShoot: true }));
+    }
 
     spawnIntervalId = setInterval(() => {
         const canShoot = Math.random() < shooterChance;
