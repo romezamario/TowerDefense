@@ -34,6 +34,10 @@ export const upgradeLevels = {
         base: 700,
         multiplier: 0.9
     },
+    health: {
+        base: 160,
+        multiplier: 1.25
+    },
     projectileSpeed: {
         base: 6,
         multiplier: 1.05
@@ -58,12 +62,14 @@ export const getTowerStats = (upgradeState = {}) => {
         Math.round(computeUpgradeValue(upgradeLevels.projectileSpeed, upgradeState.projectileSpeed ?? 0))
     );
     const aoe = Math.round(computeUpgradeValue(upgradeLevels.aoe, upgradeState.aoe ?? 0));
+    const health = Math.round(computeUpgradeValue(upgradeLevels.health, upgradeState.health ?? 0));
 
     return {
         ...towerProfile,
         damage,
         range,
         fireRate,
+        health,
         projectileSpeed,
         aoe
     };
@@ -82,6 +88,7 @@ export const levels = [
         enemyCountMultiplier: 1,
         enemyHealthMultiplier: 1,
         enemySpeedMultiplier: 1,
+        enemyDamageMultiplier: 1,
         rewardMultiplier: 1,
         baseMoney: 500,
         baseLives: 20
@@ -92,6 +99,7 @@ export const levels = [
         enemyCountMultiplier: 1.2,
         enemyHealthMultiplier: 1.15,
         enemySpeedMultiplier: 1.1,
+        enemyDamageMultiplier: 1.1,
         rewardMultiplier: 1.05,
         baseMoney: 450,
         baseLives: 18
@@ -102,6 +110,7 @@ export const levels = [
         enemyCountMultiplier: 1.4,
         enemyHealthMultiplier: 1.3,
         enemySpeedMultiplier: 1.2,
+        enemyDamageMultiplier: 1.2,
         rewardMultiplier: 1.1,
         baseMoney: 400,
         baseLives: 16

@@ -29,12 +29,20 @@ const upgradeConfigs = {
         baseCost: 130,
         multiplier: upgradeLevels.fireRate.multiplier,
         label: 'Cadencia'
+    },
+    health: {
+        levelKey: 'health',
+        costKey: 'healthCost',
+        baseCost: 140,
+        multiplier: upgradeLevels.health.multiplier,
+        label: 'Vida'
     }
 };
 
 const getDamageMultiplier = (level) => upgradeConfigs.damage.multiplier ** level;
 const getRangeMultiplier = (level) => upgradeConfigs.range.multiplier ** level;
 const getFireRateMultiplier = (level) => upgradeConfigs.fireRate.multiplier ** level;
+const getHealthMultiplier = (level) => upgradeConfigs.health.multiplier ** level;
 
 export const applyUpgrade = (upgradeKey) => {
     const config = upgradeConfigs[upgradeKey];
@@ -72,9 +80,11 @@ export const getUpgradeSnapshot = () => {
     const damageLevel = state.towerUpgrades.damage;
     const rangeLevel = state.towerUpgrades.range;
     const fireRateLevel = state.towerUpgrades.fireRate;
+    const healthLevel = state.towerUpgrades.health;
     const damageMultiplier = getDamageMultiplier(damageLevel);
     const rangeMultiplier = getRangeMultiplier(rangeLevel);
     const fireRateMultiplier = getFireRateMultiplier(fireRateLevel);
+    const healthMultiplier = getHealthMultiplier(healthLevel);
 
     return {
         damage: {
@@ -94,6 +104,12 @@ export const getUpgradeSnapshot = () => {
             cost: getUpgradeCost(upgradeConfigs.fireRate.baseCost, state.towerUpgrades.fireRate),
             label: upgradeConfigs.fireRate.label,
             valueText: `${upgradeConfigs.fireRate.label} actual: -${getPercentChange(currentStats.fireRate, baseStats.fireRate, true)}%`
+        },
+        health: {
+            level: state.towerUpgrades.health,
+            cost: getUpgradeCost(upgradeConfigs.health.baseCost, state.towerUpgrades.health),
+            label: upgradeConfigs.health.label,
+            valueText: `${upgradeConfigs.health.label} actual: +${getPercentChange(currentStats.health, baseStats.health)}%`
         }
     };
 };

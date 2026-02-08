@@ -10,11 +10,13 @@ export const state = {
         damage: 0,
         range: 0,
         fireRate: 0,
+        health: 0,
         projectileSpeed: 0,
         aoe: 0,
         damageCost: 120,
         rangeCost: 110,
-        fireRateCost: 130
+        fireRateCost: 130,
+        healthCost: 140
     },
     gameRunning: false,
     nextWaveScheduled: false
@@ -23,3 +25,4 @@ export const state = {
 export const towers = [];
 export const enemies = [];
 export const projectiles = [];
+export const enemyProjectiles = [];
