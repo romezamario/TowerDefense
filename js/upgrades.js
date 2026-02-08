@@ -1,4 +1,4 @@
-import { upgradeLevels } from './constants.js';
+import { getTowerStats, upgradeLevels } from './constants.js';
 import { state } from './state.js';
 
 export const getUpgradeCost = (baseCost, level) => {
@@ -12,18 +12,21 @@ const upgradeConfigs = {
     damage: {
         levelKey: 'damage',
         costKey: 'damageCost',
+        baseCost: 120,
         multiplier: upgradeLevels.damage.multiplier,
         label: 'Daño'
     },
     range: {
         levelKey: 'range',
         costKey: 'rangeCost',
+        baseCost: 110,
         multiplier: upgradeLevels.range.multiplier,
         label: 'Alcance'
     },
     fireRate: {
         levelKey: 'fireRate',
         costKey: 'fireRateCost',
+        baseCost: 130,
         multiplier: upgradeLevels.fireRate.multiplier,
         label: 'Cadencia'
     }
@@ -64,6 +67,8 @@ const getPercentChange = (currentValue, baseValue, isInverse = false) => {
 };
 
 export const getUpgradeSnapshot = () => {
+    const baseStats = getTowerStats();
+    const currentStats = getTowerStats(state.towerUpgrades);
     const damageLevel = state.towerUpgrades.damage;
     const rangeLevel = state.towerUpgrades.range;
     const fireRateLevel = state.towerUpgrades.fireRate;
