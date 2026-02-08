@@ -147,7 +147,7 @@ export class Enemy {
         const rewardMultiplier = levelConfig.rewardMultiplier ?? 1;
         this.health = Math.round((50 + (waveNum * 15)) * healthMultiplier);
         this.maxHealth = this.health;
-        this.speed = (1 + (waveNum * 0.1)) * speedMultiplier;
+        this.speed = (1 + (waveNum * 0.1)) * speedMultiplier * 1.1;
         this.value = Math.round((25 + (waveNum * 5)) * rewardMultiplier);
         this.size = 15;
     }

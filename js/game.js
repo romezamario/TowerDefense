@@ -293,7 +293,7 @@ const checkWaveEnd = () => {
             nextWaveTimeoutId = setTimeout(() => {
                 nextWaveTimeoutId = null;
                 startWave();
-            }, 3000);
+            }, 2000);
         }
     }
 };
