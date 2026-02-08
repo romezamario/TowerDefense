@@ -12,11 +12,7 @@ export const state = {
         fireRate: 0,
         health: 0,
         projectileSpeed: 0,
-        aoe: 0,
-        damageCost: 120,
-        rangeCost: 110,
-        fireRateCost: 130,
-        healthCost: 140
+        aoe: 0
     },
     gameRunning: false,
     nextWaveScheduled: false
