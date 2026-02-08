@@ -1,39 +1,25 @@
-import { upgradeLevels } from './constants.js';
+import { getTowerStats } from './constants.js';
 import { state } from './state.js';
-
-export const getUpgradeCost = (baseCost, level) => {
-    const safeLevel = Number.isFinite(level) ? level : 0;
-    const cost = baseCost * Math.log2(safeLevel + 2);
-    return Math.max(1, Math.round(cost));
-};
 
 const upgradeConfigs = {
     damage: {
-        baseCost: 120,
-        label: 'Daño'
+        label: 'Daño',
+        baseCost: 120
     },
     range: {
-        baseCost: 110,
-        label: 'Alcance'
+        label: 'Alcance',
+        baseCost: 110
     },
     fireRate: {
-        baseCost: 130,
-        label: 'Cadencia'
+        label: 'Cadencia',
+        baseCost: 130
     }
 };
 
-const getUpgradePercent = (upgradeKey, level) => {
-    const config = upgradeLevels[upgradeKey];
-    if (!config) {
-        return 0;
-    }
-
-    const multiplier = config.multiplier ** level;
-    if (upgradeKey === 'fireRate') {
-        return Math.round((1 - multiplier) * 100);
-    }
-
-    return Math.round((multiplier - 1) * 100);
+const getUpgradeCost = (baseCost, level) => {
+    const safeLevel = Number.isFinite(level) ? level : 0;
+    const cost = baseCost * Math.log2(safeLevel + 2);
+    return Math.max(1, Math.round(cost));
 };
 
 export const applyUpgrade = (upgradeKey) => {
@@ -53,19 +39,40 @@ export const applyUpgrade = (upgradeKey) => {
     return true;
 };
 
+const getPercentChange = (currentValue, baseValue, isInverse = false) => {
+    if (!baseValue) {
+        return 0;
+    }
+
+    if (isInverse) {
+        return Math.max(0, Math.round((1 - currentValue / baseValue) * 100));
+    }
+
+    return Math.max(0, Math.round((currentValue / baseValue - 1) * 100));
+};
+
 export const getUpgradeSnapshot = () => {
-    return Object.entries(upgradeConfigs).reduce((accumulator, [upgradeKey, config]) => {
-        const level = state.towerUpgrades[upgradeKey] ?? 0;
-        const percent = getUpgradePercent(upgradeKey, level);
-        const prefix = upgradeKey === 'fireRate' ? '-' : '+';
+    const baseStats = getTowerStats();
+    const currentStats = getTowerStats(state.towerUpgrades);
 
-        accumulator[upgradeKey] = {
-            level,
-            cost: getUpgradeCost(config.baseCost, level),
-            label: config.label,
-            valueText: `${config.label} actual: ${prefix}${percent}%`
-        };
-
-        return accumulator;
-    }, {});
+    return {
+        damage: {
+            level: state.towerUpgrades.damage,
+            cost: getUpgradeCost(upgradeConfigs.damage.baseCost, state.towerUpgrades.damage),
+            label: upgradeConfigs.damage.label,
+            valueText: `${upgradeConfigs.damage.label} actual: +${getPercentChange(currentStats.damage, baseStats.damage)}%`
+        },
+        range: {
+            level: state.towerUpgrades.range,
+            cost: getUpgradeCost(upgradeConfigs.range.baseCost, state.towerUpgrades.range),
+            label: upgradeConfigs.range.label,
+            valueText: `${upgradeConfigs.range.label} actual: +${getPercentChange(currentStats.range, baseStats.range)}%`
+        },
+        fireRate: {
+            level: state.towerUpgrades.fireRate,
+            cost: getUpgradeCost(upgradeConfigs.fireRate.baseCost, state.towerUpgrades.fireRate),
+            label: upgradeConfigs.fireRate.label,
+            valueText: `${upgradeConfigs.fireRate.label} actual: -${getPercentChange(currentStats.fireRate, baseStats.fireRate, true)}%`
+        }
+    };
 };
