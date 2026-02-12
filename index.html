@@ -300,6 +300,13 @@
             padding: 20px;
         }
 
+        #canvasWrapper {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         #canvas {
             position: relative;
             top: auto;
@@ -419,6 +426,35 @@
             box-shadow: inset 0 0 10px rgba(255, 190, 11, 0.12);
         }
 
+        .ad-section.floating {
+            position: absolute;
+            right: 16px;
+            bottom: 16px;
+            z-index: 4;
+            width: min(260px, calc(100% - 24px));
+            margin-top: 0;
+            backdrop-filter: blur(2px);
+            background: rgba(5, 8, 20, 0.78);
+            pointer-events: auto;
+        }
+
+        .ad-section.floating .tower-btn {
+            margin: 6px 0;
+            padding: 11px;
+            font-size: 0.85rem;
+        }
+
+        .ad-section.floating h3 {
+            margin-bottom: 4px;
+            font-size: 0.78rem;
+        }
+
+        .ad-section.floating .ad-info,
+        .ad-section.floating .ad-status {
+            font-size: 0.7rem;
+            line-height: 1.2;
+        }
+
         .ad-section h3 {
             font-family: 'Orbitron', sans-serif;
             font-size: 0.9rem;
@@ -524,6 +560,13 @@
                 max-height: 58vh;
             }
 
+            .ad-section.floating {
+                right: 10px;
+                bottom: 10px;
+                width: min(220px, calc(100% - 16px));
+                padding: 10px;
+            }
+
             #sidebar {
                 width: min(92vw, 320px);
                 padding: 14px;
@@ -616,6 +659,10 @@
                 max-height: 53vh;
             }
 
+            .ad-section.floating {
+                width: min(180px, calc(100% - 16px));
+            }
+
             .upgrade-section {
                 margin-bottom: 8px;
             }
@@ -671,6 +718,27 @@
             #canvas {
                 width: 100%;
                 max-height: 50vh;
+            }
+
+            .ad-section.floating {
+                right: 8px;
+                bottom: 8px;
+                width: min(170px, calc(100% - 12px));
+                padding: 8px;
+            }
+
+            .ad-section.floating .tower-btn {
+                padding: 8px;
+                font-size: 0.74rem;
+            }
+
+            .ad-section.floating h3 {
+                font-size: 0.68rem;
+            }
+
+            .ad-section.floating .ad-info,
+            .ad-section.floating .ad-status {
+                font-size: 0.62rem;
             }
 
             #sidebar {
@@ -774,7 +842,16 @@
             </div>
 
             <div id="gameArea">
-                <canvas id="canvas" width="800" height="720"></canvas>
+                <div id="canvasWrapper">
+                    <canvas id="canvas" width="800" height="720"></canvas>
+
+                    <div class="ad-section floating" aria-live="polite">
+                        <h3>🎁 Recompensa diaria</h3>
+                        <button class="tower-btn" id="rewardedAdBtn">Ver anuncio (+100 créditos)</button>
+                        <div class="ad-info" id="rewardedAdInfo">Recompensas: 0/5</div>
+                        <div class="ad-status" id="rewardedAdStatus">Inicializando anuncios...</div>
+                    </div>
+                </div>
 
                 <div id="sidebar">
                     <div class="upgrade-section">
@@ -803,12 +880,6 @@
                         </div>
                     </div>
 
-                    <div class="ad-section" aria-live="polite">
-                        <h3>🎁 Recompensa diaria</h3>
-                        <button class="tower-btn" id="rewardedAdBtn">Ver anuncio (+100 créditos)</button>
-                        <div class="ad-info" id="rewardedAdInfo">Recompensas: 0/5</div>
-                        <div class="ad-status" id="rewardedAdStatus">Inicializando anuncios...</div>
-                    </div>
                 </div>
             </div>
         </div>

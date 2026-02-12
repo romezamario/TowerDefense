@@ -117,3 +117,6 @@ Antes de mergear, confirmar:
 - La UI incorpora botón de recompensa y estado del anuncio en el sidebar del juego.
 - Reglas actuales: recompensa en créditos por oleada, cooldown entre visualizaciones y límite por partida.
 - Impacto de mantenimiento: futuros cambios de SDK deben implementarse en `js/ads.js` para evitar acoplar la lógica de juego.
+
+- UI de anuncio recompensado movida a overlay en la esquina inferior derecha del canvas para evitar ocupar espacio del sidebar.
+- Se añadió estado global `isPaused` y control de pausa/reanudación del loop durante el flujo del anuncio recompensado.
