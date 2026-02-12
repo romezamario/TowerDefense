@@ -121,3 +121,4 @@ Antes de mergear, confirmar:
 - UI de anuncio recompensado movida a overlay en la esquina inferior derecha del canvas para evitar ocupar espacio del sidebar.
 - Se añadió estado global `isPaused` y control de pausa/reanudación del loop durante el flujo del anuncio recompensado.
 - Ajuste de UX: botón de anuncio flotante reducido aproximadamente a 2/3 de su tamaño previo para minimizar interferencia con la jugabilidad.
+- Ajuste visual adicional: el botón flotante de anuncio recompensado se redujo al 50% de su ancho base y se recalibraron `padding`, `font-size` y `line-height` para mantener legibilidad y proporción en desktop y mobile.
