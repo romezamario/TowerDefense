@@ -1,6 +1,7 @@
 import { getTowerCost } from './constants.js';
 import { state, towers } from './state.js';
 import { getUpgradeSnapshot } from './upgrades.js';
+import { getAdsSnapshot } from './ads.js';
 
 export const setSelectedTower = (type) => {
     document.querySelectorAll('.tower-btn[data-tower-type]').forEach((btn) => {
@@ -33,6 +34,26 @@ export const renderUpgradePanel = () => {
     });
 };
 
+
+const updateRewardedAdPanel = () => {
+    const snapshot = getAdsSnapshot();
+    const rewardBtn = document.getElementById('rewardedAdBtn');
+    const rewardStatus = document.getElementById('rewardedAdStatus');
+    const rewardInfo = document.getElementById('rewardedAdInfo');
+
+    if (!rewardBtn || !rewardStatus || !rewardInfo) {
+        return;
+    }
+
+    rewardBtn.disabled = !snapshot.canClaimReward;
+    rewardBtn.textContent = snapshot.showing
+        ? 'Reproduciendo anuncio...'
+        : `Ver anuncio (+${snapshot.rewardPreview} créditos)`;
+
+    rewardInfo.textContent = `Recompensas: ${snapshot.rewardsGrantedThisRun}/${snapshot.maxRewardsPerRun}`;
+    rewardStatus.textContent = snapshot.blockedReason || snapshot.statusMessage;
+};
+
 export const updateUI = () => {
     document.getElementById('money').textContent = state.money;
     document.getElementById('lives').textContent = state.lives;
@@ -43,6 +64,7 @@ export const updateUI = () => {
         towerCostElement.textContent = towerCost;
     }
     renderUpgradePanel();
+    updateRewardedAdPanel();
 
     if (state.lives <= 0) {
         document.getElementById('finalWave').textContent = state.wave;

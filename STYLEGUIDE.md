@@ -18,6 +18,7 @@ Guía breve de estilo para mantener coherencia en TowerDefense.
 - `js/game.js`: loop principal y reglas de simulación.
 - `js/ui.js`: renderizado e interacción de interfaz.
 - `js/main.js`: bootstrap/inicialización.
+- `js/ads.js`: capa adaptadora de monetización (evitar acoplar proveedor y lógica de juego).
 
 ## Cambios de gameplay
 
@@ -31,3 +32,9 @@ Guía breve de estilo para mantener coherencia en TowerDefense.
 - Si se adopta un nuevo patrón técnico, debe añadirse a esta guía en el mismo PR.
 - Comentar el “por qué”, no lo obvio del “qué”.
 - No considerar una tarea terminada si la guía quedó desactualizada respecto al código.
+
+## Monetización
+
+- Implementar anuncios detrás de una capa adaptadora (`js/ads.js`) para facilitar cambios de proveedor.
+- Evitar otorgar recompensas sin confirmar finalización del anuncio.
+- Mantener reglas anti-abuso (cooldown y límite por partida) en constantes configurables.
