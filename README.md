@@ -1,47 +1,70 @@
 # TowerDefense
 
-Juego de defensa de torres ambientado en una línea frontal táctica. Este repositorio contiene el código fuente y los recursos necesarios para ejecutar el proyecto localmente.
+Juego de defensa de torres implementado como aplicación web estática (HTML + JavaScript).
 
-## Características
+## Estado del proyecto
 
-- Oleadas de enemigos con comportamiento escalable.
-- Torres con mejoras y sinergias.
-- Sistema de progresión por niveles.
-- Balanceo configurable mediante archivos de datos.
+El proyecto actualmente no usa framework ni backend obligatorio. La lógica está separada por módulos en `js/`.
 
 ## Requisitos
 
-- Node.js 18+ (si aplica al cliente web).
-- Unity 2022+ (si aplica al cliente de escritorio).
-- Git.
+- Navegador moderno (Chrome/Firefox/Edge).
+- Node.js 18+ (recomendado para validaciones de sintaxis).
+- Python 3 (opcional, para servidor local rápido).
 
-## Instalación
-
-```bash
-git clone <URL-del-repositorio>
-cd TowerDefense
-```
-
-## Uso
-
-Describe aquí cómo iniciar el juego según la plataforma objetivo:
+## Ejecución local
 
 ```bash
-# Ejemplo (ajusta según el motor o framework)
-# npm install
-# npm run dev
+python3 -m http.server 8080
+# abrir http://localhost:8080
 ```
 
-## Estructura del proyecto
+Alternativa:
 
-- `src/`: lógica principal del juego.
-- `assets/`: arte y recursos.
-- `docs/`: documentación adicional.
+```bash
+npx serve .
+```
+
+## Validación rápida
+
+```bash
+node --check js/constants.js
+node --check js/state.js
+node --check js/entities.js
+node --check js/upgrades.js
+node --check js/game.js
+node --check js/ui.js
+node --check js/main.js
+```
+
+## Estructura actual
+
+- `index.html`: entrada principal de la aplicación.
+- `js/constants.js`: configuración y constantes de gameplay.
+- `js/state.js`: estado global del juego.
+- `js/entities.js`: entidades del dominio (enemigos, torres, etc.).
+- `js/upgrades.js`: lógica de mejoras.
+- `js/game.js`: loop/reglas de juego.
+- `js/ui.js`: lógica de interfaz.
+- `js/main.js`: inicialización.
+
+## Documentación para colaboradores
+
+- `AGENTS.md`: guía operativa para agentes y colaboradores.
+- `CONTRIBUTING.md`: flujo y criterios de contribución.
+- `STYLEGUIDE.md`: convenciones de estilo y organización.
+
+## Política documental (obligatoria)
+
+Cada cambio de código debe revisar y, si aplica, actualizar estos archivos:
+
+- `AGENTS.md`
+- `README.md`
+- `CONTRIBUTING.md`
+- `STYLEGUIDE.md`
+
+Si un archivo no cambia, debe indicarse en el PR como “revisado, sin cambios”.
 
 ## Contribución
 
-Las contribuciones son bienvenidas. Abre un issue o envía un pull request con una descripción clara del cambio.
-
-## Licencia
-
-Añade aquí la licencia del proyecto (por ejemplo, MIT).
+Las contribuciones son bienvenidas mediante pull requests con descripción clara y pasos de validación.
