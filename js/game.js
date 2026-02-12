@@ -2,6 +2,7 @@ import { enemyTypes, getTowerCost, getTowerStats, levels, path } from './constan
 import { Enemy, Tower, rebuildEnemySpatialIndex, setRenderContext } from './entities.js';
 import { enemies, enemyProjectiles, projectiles, state, towers } from './state.js';
 import { resetSelectionUI, setSelectedTower, showSpecialAttackBanner, updateUI } from './ui.js';
+import { resetAdsForNewRun } from './ads.js';
 
 let ctx = null;
 let nextWaveTimeoutId = null;
@@ -234,6 +235,7 @@ export const resetGame = () => {
     state.gameRunning = false;
     state.towerStatsDirty = true;
     stopSpawns();
+    resetAdsForNewRun();
 
     towers.length = 0;
     enemies.length = 0;

@@ -149,3 +149,14 @@ export const levels = [
         baseLives: 16
     }
 ];
+
+export const adsConfig = {
+    enabled: true,
+    rewarded: {
+        baseReward: 100,
+        waveRewardMultiplier: 20,
+        maxRewardPerView: 350,
+        cooldownMs: 45000,
+        maxRewardsPerRun: 5
+    }
+};

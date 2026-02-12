@@ -45,6 +45,7 @@ node --check js/upgrades.js
 node --check js/game.js
 node --check js/ui.js
 node --check js/main.js
+node --check js/ads.js
 ```
 
 Checklist manual recomendada:
@@ -108,3 +109,11 @@ Antes de mergear, confirmar:
 - [ ] `CONTRIBUTING.md` actualizado o explícitamente validado sin cambios.
 - [ ] `STYLEGUIDE.md` actualizado o explícitamente validado sin cambios.
 - [ ] El PR describe cómo estos archivos reflejan el estado más reciente del código.
+
+
+## 9) Registro de cambios recientes (aprendizaje)
+
+- Se agregó un MVP de monetización con anuncio recompensado simulado en `js/ads.js` (sin dependencia de proveedor real).
+- La UI incorpora botón de recompensa y estado del anuncio en el sidebar del juego.
+- Reglas actuales: recompensa en créditos por oleada, cooldown entre visualizaciones y límite por partida.
+- Impacto de mantenimiento: futuros cambios de SDK deben implementarse en `js/ads.js` para evitar acoplar la lógica de juego.

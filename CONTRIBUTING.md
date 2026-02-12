@@ -25,7 +25,7 @@
 
 ## Criterios de calidad mínimos
 
-- Sin errores de sintaxis JS (`node --check`).
+- Sin errores de sintaxis JS (`node --check`, incluyendo `js/ads.js` cuando aplique).
 - Sin errores de consola al cargar el juego.
 - Sin cambios colaterales no relacionados.
 - Código legible y consistente con `STYLEGUIDE.md`.
@@ -42,3 +42,7 @@
 - Reporta bugs con pasos para reproducir.
 - Para cambios de diseño/balance, justifica objetivo y trade-offs.
 - Si el cambio es grande, abrir discusión antes de implementar.
+
+## Nota para cambios de monetización
+
+- Si se modifica el balance de anuncios (cooldown, límite o recompensa), documentar el motivo y el impacto esperado en el PR.

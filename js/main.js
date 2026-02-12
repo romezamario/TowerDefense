@@ -10,6 +10,7 @@ import {
 import { levels } from './constants.js';
 import { showGameScreen, updateUI } from './ui.js';
 import { applyUpgrade } from './upgrades.js';
+import { initAds, showRewardedAd } from './ads.js';
 
 const createStars = () => {
     const starsContainer = document.getElementById('stars');
@@ -96,12 +97,25 @@ const setupUIEvents = (canvas) => {
         handleCanvasClick(event, canvas);
     });
 
+    const rewardedAdBtn = document.getElementById('rewardedAdBtn');
+    if (rewardedAdBtn) {
+        rewardedAdBtn.addEventListener('click', async () => {
+            const result = await showRewardedAd();
+            if (!result.granted && result.reason) {
+                console.info(`[ads] recompensa no otorgada: ${result.reason}`);
+            }
+            updateUI();
+        });
+    }
+
     updateLevelDisplay();
 };
 
 const initialize = () => {
     createStars();
     updateVersionBadge();
+
+    void initAds().then(() => updateUI());
 
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
