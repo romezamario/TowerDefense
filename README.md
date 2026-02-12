@@ -74,5 +74,7 @@ Las contribuciones son bienvenidas mediante pull requests con descripción clara
 ## Monetización (MVP actual)
 
 - Se incorporó un flujo de anuncio recompensado simulado (sin SDK real) para validar UX y balance.
+- El botón de anuncio está sobrepuesto dentro del área de juego (esquina inferior derecha) para priorizar acceso móvil sin desplazar el panel de mejoras.
+- Al pulsar el botón de anuncio, el loop de juego entra en pausa temporal hasta finalizar el flujo del anuncio.
 - La recompensa se reclama entre oleadas y otorga créditos escalados por número de oleada.
 - Incluye límite por partida y cooldown para evitar abuso.

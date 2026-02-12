@@ -17,7 +17,8 @@ export const state = {
     gameRunning: false,
     nextWaveScheduled: false,
     towerStatsCache: null,
-    towerStatsDirty: true
+    towerStatsDirty: true,
+    isPaused: false
 };
 
 export const towers = [];

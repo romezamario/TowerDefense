@@ -51,6 +51,21 @@ const stopSpawns = () => {
     state.nextWaveScheduled = false;
 };
 
+const scheduleNextWave = () => {
+    if (state.isPaused || state.lives <= 0 || state.gameRunning || enemies.length > 0 || spawnIntervalId || state.nextWaveScheduled) {
+        return;
+    }
+
+    state.nextWaveScheduled = true;
+    nextWaveTimeoutId = setTimeout(() => {
+        nextWaveTimeoutId = null;
+        state.nextWaveScheduled = false;
+        if (!state.isPaused) {
+            startWave();
+        }
+    }, 2000);
+};
+
 export const initializeGame = (renderingContext) => {
     ctx = renderingContext;
     setRenderContext(renderingContext);
@@ -73,8 +88,28 @@ export const setLevel = (levelIndex) => {
     updateUI();
 };
 
+export const setGamePaused = (paused) => {
+    const nextPausedState = Boolean(paused);
+    if (state.isPaused === nextPausedState) {
+        return;
+    }
+
+    state.isPaused = nextPausedState;
+    if (state.isPaused) {
+        if (nextWaveTimeoutId) {
+            clearTimeout(nextWaveTimeoutId);
+            nextWaveTimeoutId = null;
+        }
+        state.nextWaveScheduled = false;
+    } else {
+        scheduleNextWave();
+    }
+    updateUI();
+};
+
 export const startWave = () => {
     if (state.gameRunning) return;
+    if (state.isPaused) return;
     if (state.lives <= 0) return;
     stopSpawns();
 
@@ -233,6 +268,7 @@ export const resetGame = () => {
     state.selectedTowerType = 0;
     state.selectedTowerId = null;
     state.gameRunning = false;
+    state.isPaused = false;
     state.towerStatsDirty = true;
     stopSpawns();
     resetAdsForNewRun();
@@ -345,13 +381,7 @@ const updateEnemyProjectiles = () => {
 const checkWaveEnd = () => {
     if (state.gameRunning && enemies.length === 0 && !spawnIntervalId) {
         state.gameRunning = false;
-        if (state.lives > 0 && !state.nextWaveScheduled) {
-            state.nextWaveScheduled = true;
-            nextWaveTimeoutId = setTimeout(() => {
-                nextWaveTimeoutId = null;
-                startWave();
-            }, 2000);
-        }
+        scheduleNextWave();
     }
 };
 
@@ -364,12 +394,15 @@ export const gameLoop = (currentTime) => {
         ctx.drawImage(pathCanvas, 0, 0);
     }
     const towerStats = getTowerStatsCached();
-    rebuildEnemySpatialIndex();
-    updateTowers(currentTime, towerStats);
-    updateProjectiles(towerStats);
-    updateEnemies(currentTime);
-    updateEnemyProjectiles();
-    checkWaveEnd();
+
+    if (!state.isPaused) {
+        rebuildEnemySpatialIndex();
+        updateTowers(currentTime, towerStats);
+        updateProjectiles(towerStats);
+        updateEnemies(currentTime);
+        updateEnemyProjectiles();
+        checkWaveEnd();
+    }
     if (uiDirty) {
         updateUI();
         uiDirty = false;

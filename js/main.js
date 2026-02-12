@@ -4,6 +4,7 @@ import {
     initializeGame,
     resetGame,
     selectTower,
+    setGamePaused,
     setLevel,
     startWave
 } from './game.js';
@@ -100,10 +101,12 @@ const setupUIEvents = (canvas) => {
     const rewardedAdBtn = document.getElementById('rewardedAdBtn');
     if (rewardedAdBtn) {
         rewardedAdBtn.addEventListener('click', async () => {
+            setGamePaused(true);
             const result = await showRewardedAd();
             if (!result.granted && result.reason) {
                 console.info(`[ads] recompensa no otorgada: ${result.reason}`);
             }
+            setGamePaused(false);
             updateUI();
         });
     }
